@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Vols Power Link</title>
+<style>
+  :root { --bg:#07040f; --panel:#14091f; --edge:#6e4214; --orange:#ff8200; --text:#f3eefa; --dim:#a9a0bd; --good:#157a32; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:#000; color:var(--text); overflow:hidden; font-family: system-ui, "Segoe UI", Roboto, sans-serif; }
+  body { display:flex; align-items:center; justify-content:center; }
+  canvas#game { width:min(100vw, 177.78vh); height:min(100vh, 56.25vw); background:#000; touch-action:none; outline:none; display:block; }
+  #admin { display:none; position:fixed; inset:0; z-index:10; background:var(--bg); flex-direction:column; padding:14px 18px 10px; overflow:hidden; }
+  #admin.open { display:flex; }
+  #admin .head { font:900 34px Impact, "Arial Black", sans-serif; color:var(--orange); text-align:center; letter-spacing:.04em; text-shadow:0 2px 0 #3a1500; flex:none; }
+  #admin .main { display:flex; gap:14px; flex:1; min-height:0; margin-top:8px; }
+  #admin .tabs { display:flex; flex-direction:column; gap:6px; width:210px; flex:none; overflow-y:auto; }
+  #admin .tab { background:#1c1230; color:#cfc6e0; border:2px solid #46325f; border-radius:8px; padding:9px 12px; text-align:left; font:700 16px system-ui, "Segoe UI", sans-serif; cursor:pointer; }
+  #admin .tab.on { background:#8a4600; color:#fff; border-color:var(--orange); }
+  #admin .content { flex:1; overflow-y:auto; background:#0e0819; border-radius:12px; padding:12px 16px; }
+  #admin .row { display:flex; align-items:center; gap:14px; padding:6px 4px; flex-wrap:wrap; }
+  #admin .row.vrow { align-items:flex-start; }
+  #admin .label { flex:0 0 330px; font-weight:700; }
+  #admin .info { color:var(--dim); padding:8px 4px; font-size:14px; }
+  #admin .note { color:#8cc8eb; font-size:13px; }
+  #admin input.num, #admin input.txt, #admin select { background:#18102a; color:#fff; border:2px solid #50407a; border-radius:6px; padding:6px 8px; font:700 16px system-ui, "Segoe UI", sans-serif; width:100px; }
+  #admin input.txt { width:200px; } #admin select { width:auto; }
+  #admin input:focus, #admin select:focus { border-color:var(--orange); outline:none; }
+  #admin .vec { display:flex; flex-wrap:wrap; gap:6px 8px; max-width:660px; }
+  #admin .cell small { display:block; font-size:10px; color:#9a8fb5; margin-bottom:1px; }
+  #admin .tog input { display:none; } #admin .tog span { display:inline-block; width:54px; height:28px; border-radius:14px; background:#5a2030; position:relative; cursor:pointer; border:2px solid #7b4a5a; }
+  #admin .tog span::after { content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:#fff; transition:left .15s; }
+  #admin .tog input:checked + span { background:var(--good); border-color:#4fbf70; } #admin .tog input:checked + span::after { left:28px; }
+  #admin .bar { display:flex; align-items:center; gap:10px; padding-top:10px; flex:none; flex-wrap:wrap; }
+  #admin .btn { background:#4a3a14; color:#fff; border:2px solid #fff; border-radius:10px; padding:11px 22px; font:900 18px system-ui, "Segoe UI", sans-serif; cursor:pointer; letter-spacing:.03em; }
+  #admin .btn.go { background:var(--good); } #admin .btn.stop { background:#6a1c1c; } #admin .btn.warn { background:#8a6a10; }
+  #admin .btn.action { display:block; width:100%; max-width:700px; margin:6px 0; background:#3c1e28; border-color:#c86464; font-size:15px; padding:8px; }
+  #admin .flash { color:#9be8b0; font-weight:700; } #admin .dirty { color:#ffbe3c; font-weight:900; margin-left:auto; }
+  #admin h3 { color:#ffdc78; margin:14px 4px 4px; font:900 22px Impact, sans-serif; }
+  #admin .progress { height:20px; background:#1e1632; border-radius:8px; overflow:hidden; margin:8px 4px; } #admin .pbar { height:100%; width:0; background:var(--orange); transition:width .1s; }
+  #admin .srow { display:flex; gap:20px; padding:3px 6px; } #admin .srow span { flex:0 0 230px; color:#d8d0e8; white-space:pre; } #admin .srow.big { font-size:24px; color:#ffdc78; }
+  #admin .stats2 { display:flex; gap:40px; flex-wrap:wrap; } #admin .stat { min-width:320px; }
+  #admin .pinbox { margin:auto; background:#1a1030; border:3px solid var(--orange); border-radius:16px; padding:28px 34px; text-align:center; } #admin .pinbox h2 { margin:0 0 14px; }
+  #admin .pin { font-size:34px !important; text-align:center; width:240px !important; letter-spacing:.3em; } #admin .pinmsg { color:#ff6a6a; min-height:22px; margin:8px 0; }
+  #admin .pinbox .row { justify-content:center; }
+  @media (max-width: 760px) { #admin .main { flex-direction:column; } #admin .tabs { flex-direction:row; width:auto; overflow-x:auto; } #admin .label { flex-basis:100%; } }
+</style>
+</head>
+<body>
+<canvas id="game" tabindex="0"></canvas>
+<div id="admin"></div>
+<script src="js/config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/synth.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/gfx.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/game.js"></script>
+<script>
+  window.addEventListener("load", () => {
+    const game = new Game(document.getElementById("game"));
+    window.game = game;
+    game.start();
+  });
+</script>
+</body>
+</html>

@@ -1,5 +1,19 @@
 # VOLS POWER LINK
 
+## Play in your browser (easiest - nothing to install)
+
+Open **`web/vols-power-link.html`** by double-clicking it (Chrome, Edge or Firefox). That single file is the whole game:
+same maths, art, music, Smokey and admin panel as the desktop version. Click once on the title screen to start the sound.
+
+* Your balance, settings and stats are saved in the browser (localStorage), so use the same browser each time.
+* Admin panel: press **F1** (or click the small ADMIN label), default PIN `1234`.
+* Editing the source? Use `web/index.html` + `web/js/*.js`, then run `python3 web/build_single.py` to rebuild the one-file version.
+* Want a link you can open anywhere? Turn on GitHub Pages for the `web/` folder (or just upload the single file to any static host).
+
+## Desktop version (Python + pygame)
+
+The original build below still works if you prefer a native window.
+
 A personal, local-play Tennessee Vols themed video slot, modelled on the "Zeus Charged Link" style of game:
 5 reels x 3 rows, 20 paylines, a money-orb **hold & spin** bonus and a scatter-triggered **free games** bonus.
 Everything (art, sound effects, ominous music) is generated in code - there are no asset files to download.
