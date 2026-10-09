@@ -11,7 +11,7 @@ function h(tag, attrs, ...kids) {
 const getp = (o, p) => p.split(".").reduce((a, k) => a[k], o);
 const setp = (o, p, v) => { const ks = p.split("."); const last = ks.pop(); ks.reduce((a, k) => a[k], o)[last] = v; };
 const fmtMoney = (c) => "$" + (c / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const oneIn = (p) => (w) => `= ${(100 / Math.max(1, getp(w, p))).toFixed(3)}% of spins (about every ${getp(w, p)} spins)`;
+const oneIn = (p) => (w) => (getp(w, p) > 0 ? `= ${(100 / Math.max(1, getp(w, p))).toFixed(3)}% of spins (about every ${getp(w, p)} spins)` : "OFF (0 disables this trigger)");
 
 class Admin {
   constructor(game) {
@@ -24,7 +24,7 @@ class Admin {
     const num = (label, path, lo, hi, step, extra = {}) => Object.assign({ label, path, kind: "num", lo, hi, step }, extra);
     const int = (label, path, lo, hi, extra = {}) => Object.assign({ label, path, kind: "int", lo, hi, step: 1 }, extra);
     const bool = (label, path) => ({ label, path, kind: "bool" });
-    const vec = (label, path, lo, hi, step, cols) => ({ label, path, kind: "vec", lo, hi, step, cols });
+    const vec = (label, path, lo, hi, step, cols, note) => ({ label, path, kind: "vec", lo, hi, step, cols, note });
     const info = (text) => ({ kind: "info", text });
     const weights = (mode) => [info("Relative weights per reel (higher = more frequent). Columns are reels 1-5. Wilds default to reels 2-4 only."),
       ...SYMBOLS.map((s) => vec(s === "POWERT" ? "POWER T" : s === "ORB" ? "MONEY ORB" : s, "weights." + mode + "." + s, 0, 10000, 1, ["R1", "R2", "R3", "R4", "R5"])),
@@ -40,13 +40,19 @@ class Admin {
         { kind: "action", label: "Restore ALL settings to factory defaults", confirm: true, fn: () => { this.work = resetConfig(); this.dirty = true; this.render(); } }]],
       ["Bonus Hit Rates", [
         info("Bonuses are forced on a '1 in N spins' basis. Lower N = more often. These do not depend on the reel weights."),
-        num("Smokey's Orb Link (6+ orbs): 1 in", "hit_rates.orb_bonus_one_in", 1, 1e6, 5, { note: oneIn("hit_rates.orb_bonus_one_in") }),
-        num("Power T Free Games (3 T): 1 in", "hit_rates.power_t_bonus_one_in", 1, 1e6, 5, { note: oneIn("hit_rates.power_t_bonus_one_in") }),
+        num("Smokey's Orb Link (6+ orbs): 1 in", "hit_rates.orb_bonus_one_in", 0, 1e6, 5, { note: oneIn("hit_rates.orb_bonus_one_in") }),
+        num("Power T Free Games (3 T): 1 in", "hit_rates.power_t_bonus_one_in", 0, 1e6, 5, { note: oneIn("hit_rates.power_t_bonus_one_in") }),
         vec("Orb count on trigger (weights for 6 / 7 / 8 / 9 / 10 / 11)", "hit_rates.orb_count_weights", 0, 1e5, 1, ["6", "7", "8", "9", "10", "11"]),
         vec("Power T count on trigger (weights for 3 / 4 / 5)", "hit_rates.power_t_count_weights", 0, 1e5, 1, ["3 T", "4 T", "5 T"]),
         info("Inside Free Games:"),
-        num("Orb Link during free games: 1 in", "hit_rates.free_orb_bonus_one_in", 1, 1e6, 5, { note: oneIn("hit_rates.free_orb_bonus_one_in") }),
-        num("Retrigger (3 T) during free games: 1 in", "hit_rates.free_retrigger_one_in", 1, 1e6, 5, { note: oneIn("hit_rates.free_retrigger_one_in") })]],
+        num("Orb Link during free games: 1 in (0 = off)", "hit_rates.free_orb_bonus_one_in", 0, 1e6, 5, { note: oneIn("hit_rates.free_orb_bonus_one_in") }),
+        num("Jackpot Wheel (3 WHEEL) per free spin: 1 in", "hit_rates.free_wheel_one_in", 0, 1e6, 5, { note: oneIn("hit_rates.free_wheel_one_in") }),
+        num("Retrigger (3 T) during free games: 1 in", "hit_rates.free_retrigger_one_in", 0, 1e6, 5, { note: oneIn("hit_rates.free_retrigger_one_in") })]],
+      ["Checker Meter", [info("Checkerboard symbols that land in the base game are collected. When the meter reaches the target, a bonus is forced."),
+        bool("Checker meter enabled", "collect.enabled"), int("Checkerboards needed", "collect.target", 1, 100000),
+        { label: "Bonus it triggers", path: "collect.bonus", kind: "select", options: [["free_games", "Free Games (with Orb Pot + Wheel)"], ["orb_link", "Smokey's Orb Link"], ["random", "Random (50/50)"]] },
+        int("Free games awarded by the meter", "collect.bonus_spins", 1, 999), bool("Carry extra checkerboards over after a bonus", "collect.carry_over"),
+        info("Tip: how fast the meter fills depends on the CHECKER weight on the Reel Weights: Base page (about 1.5 checkerboards per spin by default).")]],
       ["Reel Weights: Base", weights("base")], ["Reel Weights: Free", weights("free")],
       ["Paytable", [info("Line pays are multiples of the LINE bet (total bet / 20). Columns: 3, 4, 5 of a kind."),
         ...PAYING.slice().reverse().map((s) => vec(s, "paytable." + s, 0, 1e7, 5, ["3x", "4x", "5x"])), vec("Power T scatter (x TOTAL bet)", "scatter_pay", 0, 1e7, 1, ["3 T", "4 T", "5 T"])]],
@@ -64,7 +70,13 @@ class Admin {
         num("Boost upgrades Mini/Minor chance", "smokey.jackpot_upgrade_chance", 0, 1, 0.05), int("Fetch drops this many orbs: min", "smokey.fetch_orbs_min", 0, 15), int("Fetch drops this many orbs: max", "smokey.fetch_orbs_max", 0, 15)]],
       ["Free Games", [vec("Free games awarded (3 / 4 / 5 T)", "free_games.spins_awarded", 1, 999, 1, ["3 T", "4 T", "5 T"]), vec("Retrigger spins (3 / 4 / 5 T)", "free_games.retrigger_spins", 0, 999, 1, ["3 T", "4 T", "5 T"]),
         vec("Win multiplier by free-spin number", "free_games.multipliers", 1, 1000, 1, [1, 2, 3, 4, 5, 6, 7, 8].map((i) => "#" + i)), num("Smokey sticky-wild chance / spin", "free_games.smokey_wild_chance", 0, 1, 0.01),
-        int("Sticky wilds dropped: min", "free_games.smokey_wild_min", 1, 9), int("Sticky wilds dropped: max", "free_games.smokey_wild_max", 1, 9), bool("Multiplier also boosts Orb Link", "free_games.multiplier_on_orbs")]],
+        int("Sticky wilds dropped: min", "free_games.smokey_wild_min", 1, 9), int("Sticky wilds dropped: max", "free_games.smokey_wild_max", 1, 9), bool("Multiplier also boosts Orb Link", "free_games.multiplier_on_orbs"),
+        info("Orb Pot: every orb that lands during Free Games is added to a pot that pays in full at the end."),
+        bool("Orb Pot enabled", "free_games.collect_orbs"), bool("Free-game multiplier also boosts the Orb Pot", "free_games.multiplier_on_pot")]],
+      ["Jackpot Wheel", [info("Land 3 WHEEL symbols on one free spin to spin the Jackpot Wheel. The wheel only awards jackpots (the same Mini / Minor / Major / Grand values as the Orb Link, scaled by your bet)."),
+        vec("Wheel segments (Mini, Minor, Major, Grand)", "wheel.segments", 0, 12, 1, ["MINI", "MINOR", "MAJOR", "GRAND"], (w) => { const c = w.wheel.segments, t = c.reduce((a, b) => a + b, 0) || 1; return `${t} segments. Chance per spin: ` + ["Mini", "Minor", "Major", "Grand"].map((k, i) => `${k} ${(100 * c[i] / t).toFixed(1)}%`).join("  "); }),
+        vec("Wheel spins for 3 / 4 / 5 WHEEL symbols", "wheel.spins_for_count", 1, 9, 1, ["3", "4", "5"]), bool("Free-game multiplier also boosts wheel wins", "wheel.apply_free_multiplier"),
+        info("How often it triggers is set on the Bonus Hit Rates page (Jackpot Wheel per free spin). The WHEEL symbol's weights are on Reel Weights: Free.")]],
       ["Bets & Denoms", [info("Total bet = denomination x power-level credits. Every prize is a multiple of the bet, so wins scale with both."),
         vec("Denominations ($)", "bet.denominations", 0.01, 1000, 0.01), vec("Power levels (credits per spin)", "bet.power_levels", 1, 1e6, 5)]],
       ["Simulator", "sim"], ["Tools & Stats", "tools"],
@@ -120,11 +132,14 @@ class Admin {
     if (f.kind === "action") { let armed = false; const b = h("button", { class: "btn action", text: "[ " + f.label + " ]", onclick: () => { if (f.confirm && !armed) { armed = true; b.textContent = "[ CLICK AGAIN TO CONFIRM: " + f.label + " ]"; setTimeout(() => { armed = false; b.textContent = "[ " + f.label + " ]"; }, 4000); return; } f.fn(); } }); return b; }
     const w = this.work, label = h("div", { class: "label", text: f.label });
     if (f.kind === "bool") { const cb = h("input", { type: "checkbox" }); cb.checked = !!getp(w, f.path); cb.addEventListener("change", () => { setp(w, f.path, cb.checked); this.dirty = true; this.markDirty(); }); return h("div", { class: "row" }, label, h("label", { class: "tog" }, cb, h("span"))); }
+    if (f.kind === "select") { const sel = h("select", {}, f.options.map(([v, t]) => h("option", { value: v, text: t, selected: getp(w, f.path) === v }))); sel.addEventListener("change", () => { setp(w, f.path, sel.value); this.dirty = true; this.markDirty(); }); return h("div", { class: "row" }, label, sel); }
     if (f.kind === "str") { const t = h("input", { type: "text", class: "txt", value: getp(w, f.path) }); t.addEventListener("input", () => { setp(w, f.path, t.value); this.dirty = true; this.markDirty(); }); return h("div", { class: "row" }, label, t); }
     if (f.kind === "vec") {
       const arr = getp(w, f.path), cells = h("div", { class: "vec" });
       arr.forEach((_, i) => cells.append(h("div", { class: "cell" }, f.cols && f.cols[i] ? h("small", { text: f.cols[i] }) : null, this.numInput(f, () => getp(this.work, f.path)[i], (v) => (getp(this.work, f.path)[i] = v)))));
-      return h("div", { class: "row vrow" }, label, cells);
+      const box = h("div", {}, cells);
+      if (f.note) { const nt = h("div", { class: "note note-live" }); const upd = () => (nt.textContent = f.note(this.work)); nt.addEventListener("refresh", upd); upd(); box.append(nt); }
+      return h("div", { class: "row vrow" }, label, box);
     }
     const note = f.note ? h("span", { class: "note note-live" }) : null;
     const inp = this.numInput(f, () => getp(this.work, f.path), (v) => setp(this.work, f.path, v));
@@ -146,8 +161,9 @@ class Admin {
     const s = this.sim, o = this.simOut; if (!o) return;
     this.simBar.style.width = (s.running ? s.progress * 100 : s.result ? 100 : 0) + "%"; o.replaceChildren();
     const r = s.result; if (!r) return;
-    const rows = [["TOTAL RTP", r.rtp.toFixed(2) + "%", true], ["  line wins + scatters", r.rtpBase.toFixed(2) + "%"], ["  Orb Link bonus", r.rtpOrb.toFixed(2) + "%"], ["  Power T Free Games", r.rtpFree.toFixed(2) + "%"],
-      ["Base hit frequency", r.hitFreq.toFixed(1) + "% of spins"], ["Orb Link frequency", `1 in ${r.orbOneIn.toFixed(0)}   (avg pay ${r.avgOrbX.toFixed(1)}x bet)`], ["Free Games frequency", `1 in ${r.freeOneIn.toFixed(0)}   (avg pay ${r.avgFreeX.toFixed(1)}x bet)`],
+    const rows = [["TOTAL RTP", r.rtp.toFixed(2) + "%", true], ["  line wins + scatters", r.rtpBase.toFixed(2) + "%"], ["  Orb Link bonus (natural)", r.rtpOrb.toFixed(2) + "%"], ["  Free Games (natural Power T)", r.rtpFree.toFixed(2) + "%"], ["  Checker-meter bonuses", r.rtpMeter.toFixed(2) + "%"],
+      ["  ...of which Orb Pot", r.rtpPot.toFixed(2) + "%"], ["  ...of which Jackpot Wheel", r.rtpWheel.toFixed(2) + "%"],
+      ["Base hit frequency", r.hitFreq.toFixed(1) + "% of spins"], ["Orb Link frequency", `1 in ${r.orbOneIn.toFixed(0)}   (avg pay ${r.avgOrbX.toFixed(1)}x bet)`], ["Free Games (Power T) frequency", `1 in ${r.freeOneIn.toFixed(0)}   (avg free-games round ${r.avgFreeX.toFixed(1)}x bet)`], ["Checker-meter bonus frequency", r.meterOneIn ? `1 in ${r.meterOneIn.toFixed(0)} spins` : "off"], ["Jackpot Wheel spins", r.wheelOneIn ? `1 in ${r.wheelOneIn.toFixed(0)} spins` : "none seen"],
       ["20x+ bet win", `1 in ${r.bigOneIn.toFixed(0)} spins`], ["Biggest win seen", `${Math.round(r.maxWinX).toLocaleString()}x bet   (${r.full} full boards)`], ["Volatility (std dev)", r.volatility.toFixed(1)], ["Simulated", `${r.spins.toLocaleString()} spins in ${r.seconds.toFixed(1)}s`]];
     rows.forEach(([a, b, big]) => o.append(h("div", { class: "srow" + (big ? " big" : "") }, h("span", { text: a }), h("b", { text: b }))));
   }
@@ -169,11 +185,14 @@ class Admin {
     const g = this.g, stat = (title, d) => {
       const rtp = d.wagered ? (100 * d.won / d.wagered).toFixed(1) + "%" : "0.0%";
       return h("div", { class: "stat" }, h("h3", { text: title }), ...[["Spins", d.spins.toLocaleString()], ["Wagered", fmtMoney(d.wagered)], ["Won", fmtMoney(d.won)], ["Actual RTP", rtp], ["Biggest win", fmtMoney(d.biggest)],
-        ["Orb Links", d.orb_bonuses], ["Free Games", d.free_games], ["Jackpots", d.jackpots]].map(([a, b]) => h("div", { class: "srow" }, h("span", { text: a }), h("b", { text: String(b) }))));
+        ["Orb Links", d.orb_bonuses], ["Free Games", d.free_games], ["Checker-meter bonuses", d.meter_bonuses], ["Wheel spins", d.wheel_spins], ["Jackpots", d.jackpots]].map(([a, b]) => h("div", { class: "srow" }, h("span", { text: a }), h("b", { text: String(b) }))));
     };
     return [h("h3", { text: "TEST TOOLS" }), h("div", { class: "info", text: "Force the next spin to trigger a bonus (closes this panel):" }),
       h("div", { class: "row" }, h("button", { class: "btn go", text: "FORCE ORB LINK", onclick: () => { g.forceNext = "orb"; g.toast("NEXT SPIN FORCES THE ORB LINK"); this.close(); } }),
         h("button", { class: "btn go", text: "FORCE FREE GAMES", onclick: () => { g.forceNext = "power_t"; g.toast("NEXT SPIN FORCES FREE GAMES"); this.close(); } })),
+      h("div", { class: "info", text: `Checker meter: ${g.meter} / ${this.work.collect.target}` }),
+      h("div", { class: "row" }, h("button", { class: "btn", text: "SET METER TO TARGET - 5", onclick: () => { g.meter = Math.max(0, Math.floor(g.cfg.collect.target) - 5); g.meterDisp = g.meter; g.saveState(); this.render(); } }),
+        h("button", { class: "btn", text: "RESET METER TO 0", onclick: () => { g.meter = 0; g.meterDisp = 0; g.saveState(); this.render(); } })),
       h("h3", { text: "STATISTICS" }), h("div", { class: "stats2" }, stat("SESSION", g.session), stat("LIFETIME (this browser)", g.stats)),
       h("div", { class: "info", text: "Settings and your balance are stored in this browser (localStorage). Clearing site data resets them." })];
   }

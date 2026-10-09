@@ -10,6 +10,19 @@ same maths, art, music, Smokey and admin panel as the desktop version. Click onc
 * Editing the source? Use `web/index.html` + `web/js/*.js`, then run `python3 web/build_single.py` to rebuild the one-file version.
 * Want a link you can open anywhere? Turn on GitHub Pages for the `web/` folder (or just upload the single file to any static host).
 
+### New in the browser version
+
+* **End Zone Meter** - checkerboard symbols that land in the base game are collected. At **300** (configurable) a bonus is forced:
+  Free Games by default, or Smokey's Orb Link, or a random one of the two (admin > Checker Meter). Extra checkerboards carry over.
+* **Orb Pot** - during Free Games every orb that lands (any number, any spin) goes into a pot that keeps growing and **pays in full at the end**.
+* **Jackpot Wheel** - the **WHEEL** symbol only appears in Free Games. Land 3 on one free spin and the wheel spins.
+  It awards **jackpots only** (Mini / Minor / Major / Grand, scaled by your bet). Segment counts per jackpot are configurable
+  (admin > Jackpot Wheel), as is how often it triggers (admin > Bonus Hit Rates). Setting any "1 in N" to 0 turns that trigger off.
+* The factory settings were re-balanced with the simulator to stay near 95% RTP with all of this on.
+* Test the maths without a browser: `node web/tests/run.js`.
+
+> The Python/pygame desktop version below does not have these three features yet.
+
 ## Desktop version (Python + pygame)
 
 The original build below still works if you prefer a native window.

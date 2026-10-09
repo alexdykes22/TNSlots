@@ -1,4 +1,4 @@
-/* Generated from tnslots/config.py defaults. */
+/* Default settings for the browser version (edit here, or use the in-game admin panel). */
 const DEFAULT_CONFIG = {
   "general": {
     "starting_balance": 1000.0,
@@ -38,7 +38,7 @@ const DEFAULT_CONFIG = {
   },
   "hit_rates": {
     "orb_bonus_one_in": 135,
-    "power_t_bonus_one_in": 165,
+    "power_t_bonus_one_in": 800,
     "orb_count_weights": [
       60,
       22,
@@ -52,8 +52,9 @@ const DEFAULT_CONFIG = {
       6,
       1
     ],
-    "free_orb_bonus_one_in": 100,
-    "free_retrigger_one_in": 45
+    "free_orb_bonus_one_in": 0,
+    "free_retrigger_one_in": 45,
+    "free_wheel_one_in": 300
   },
   "weights": {
     "base": {
@@ -140,6 +141,13 @@ const DEFAULT_CONFIG = {
         6,
         6,
         6
+      ],
+      "WHEEL": [
+        0,
+        0,
+        0,
+        0,
+        0
       ]
     },
     "free": {
@@ -221,11 +229,18 @@ const DEFAULT_CONFIG = {
         2
       ],
       "ORB": [
-        4,
-        4,
-        4,
-        4,
-        4
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "WHEEL": [
+        3,
+        3,
+        3,
+        3,
+        3
       ]
     }
   },
@@ -373,20 +388,43 @@ const DEFAULT_CONFIG = {
       1,
       1,
       1,
+      1,
+      1,
       2,
       2,
-      2,
-      3,
-      3
+      2
     ],
-    "smokey_wild_chance": 0.12,
+    "smokey_wild_chance": 0.08,
     "smokey_wild_min": 1,
     "smokey_wild_max": 2,
-    "multiplier_on_orbs": false
+    "multiplier_on_orbs": false,
+    "collect_orbs": true,
+    "multiplier_on_pot": false
+  },
+  "collect": {
+    "enabled": true,
+    "target": 300,
+    "bonus": "free_games",
+    "bonus_spins": 8,
+    "carry_over": true
+  },
+  "wheel": {
+    "segments": [
+      9,
+      5,
+      1,
+      1
+    ],
+    "spins_for_count": [
+      1,
+      2,
+      3
+    ],
+    "apply_free_multiplier": false
   }
 };
 
-const SYMBOLS = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD","POWERT","ORB"];
+const SYMBOLS = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD","POWERT","ORB","WHEEL"];
 const PAYING = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD"];
 const JACKPOTS = ["mini","minor","major","grand"];
 const ORB_TYPES = ["cash","mini","minor","major","grand"];

@@ -182,13 +182,48 @@ function drawOrb(ctx, S, kind) {
   ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.beginPath(); ctx.ellipse(c - r * 0.17, c - r * 0.61, r * 0.45, r * 0.25, 0, 0, 6.283); ctx.fill();
 }
 
+const WHEEL_COL = { mini: [60, 200, 90], minor: [60, 130, 255], major: [175, 80, 245], grand: [240, 50, 60] };
+/* Draws a wheel of coloured wedges. Used for the reel symbol and the big jackpot wheel. */
+function drawWheelDisc(ctx, cx, cy, R, layout, angle = 0, o = {}) {
+  const n = layout.length, seg = Math.PI * 2 / n;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle);
+  for (let i = 0; i < n; i++) {
+    const a0 = i * seg - Math.PI / 2 - seg / 2, a1 = a0 + seg, c = WHEEL_COL[layout[i]];
+    const g = ctx.createRadialGradient(0, 0, R * 0.15, 0, 0, R); g.addColorStop(0, rgb(scaleC(c, 0.55))); g.addColorStop(1, rgb(c));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, R, a0, a1); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(255,240,200,0.9)"; ctx.lineWidth = o.thin ? 1.5 : 3; ctx.stroke();
+    if (o.labels) {
+      ctx.save(); ctx.rotate(a0 + seg / 2); ctx.translate(R * 0.66, 0);
+      ctx.font = `${Math.max(12, Math.min(26, R * 0.11 * 12 / Math.max(8, n) * 1.6))}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
+      ctx.lineWidth = 4; ctx.strokeStyle = "#000"; ctx.fillStyle = "#fff"; const t = layout[i].toUpperCase();
+      ctx.strokeText(t, 0, 0); ctx.fillText(t, 0, 0); ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+function drawWheelSymbol(ctx, S) {
+  tile(ctx, S, [40, 24, 76], [14, 8, 34], [255, 215, 110]);
+  const layout = ["mini", "minor", "mini", "major", "mini", "minor", "mini", "grand"];
+  drawWheelDisc(ctx, S / 2, S * 0.5, S * 0.36, layout, -0.2, { thin: true });
+  ctx.strokeStyle = rgb(GOLD); ctx.lineWidth = S * 0.045; ctx.beginPath(); ctx.arc(S / 2, S * 0.5, S * 0.37, 0, 6.283); ctx.stroke();
+  ctx.fillStyle = rgb(GOLD); ctx.beginPath(); ctx.arc(S / 2, S * 0.5, S * 0.07, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = "#7a4a00"; ctx.lineWidth = S * 0.012; ctx.stroke();
+  poly(ctx, S, [[0.44, 0.07], [0.56, 0.07], [0.5, 0.19]], [255, 70, 60], [255, 240, 200], Math.max(2, S / 70));
+  ctx.font = `${S * 0.12}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#000"; ctx.fillText("JACKPOT", S / 2 + 1, S * 0.935 + 1); ctx.fillStyle = "#fff"; ctx.fillText("JACKPOT", S / 2, S * 0.935);
+}
+function drawCheckerIcon(ctx, x, y, s) {
+  const n = 4, c = s / n;
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { ctx.fillStyle = rgb((i + j) % 2 === 0 ? ORANGE : WHITE); ctx.fillRect(x + i * c, y + j * c, c + 0.5, c + 0.5); }
+  ctx.strokeStyle = "rgba(20,8,0,0.9)"; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, s, s);
+}
+
 class Art {
   constructor() {
     const R = 2, S = CELL * R, mk = (fn) => { const c = mkCanvas(S, S), x = c.getContext("2d"); fn(x, S); return c; };
     this.sym = {
       J: mk((x, s) => drawLetter(x, s, "J", ORANGE)), Q: mk((x, s) => drawLetter(x, s, "Q", WHITE)),
       K: mk((x, s) => drawLetter(x, s, "K", ORANGE_HI)), A: mk((x, s) => drawLetter(x, s, "A", [235, 235, 245])),
-      CHECKER: mk(drawChecker), FOOTBALL: mk(drawFootball), HELMET: mk(drawHelmet), TROPHY: mk(drawTrophy),
+      CHECKER: mk(drawChecker), WHEEL: mk(drawWheelSymbol), FOOTBALL: mk(drawFootball), HELMET: mk(drawHelmet), TROPHY: mk(drawTrophy),
       SMOKEY: mk((x, s) => drawSmokeyHead(x, s, false, true)), WILD: mk(drawWild), POWERT: mk(drawPowerT),
     };
     this.orb = {}; for (const k of Object.keys(ORB_COLORS)) this.orb[k] = mk((x, s) => drawOrb(x, s, k));
