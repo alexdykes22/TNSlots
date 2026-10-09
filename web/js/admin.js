@@ -77,9 +77,12 @@ class Admin {
     const f = this.root.querySelector("input"); if (f) f.focus();
   }
   close() { this.root.classList.remove("open"); this.root.replaceChildren(); this.sim.cancel = true; this.g.state = "idle"; this.g.canvas.focus(); }
-  tryClose() { if (this.dirty && !confirm("You have unsaved changes. Discard them?")) return; this.close(); }
-  save() { this.g.applyConfig(clone(this.work)); this.dirty = false; this.g.sfx("collect"); this.render(); this.flash("Saved. New settings are live."); }
-  flash(msg) { const el = this.root.querySelector(".flash"); if (el) { el.textContent = msg; setTimeout(() => (el.textContent = ""), 2500); } }
+  tryClose() {
+    if (this.dirty && !this.closeArmed) { this.closeArmed = true; this.flash("Unsaved changes. Click CLOSE again to discard them, or SAVE & APPLY."); return; }
+    this.closeArmed = false; this.close();
+  }
+  save() { this.closeArmed = false; this.g.applyConfig(clone(this.work)); this.dirty = false; this.g.sfx("collect"); this.render(); this.flash("Saved. New settings are live."); }
+  flash(msg) { const el = this.root.querySelector(".flash"); if (el) { el.textContent = msg; clearTimeout(this.flashT); this.flashT = setTimeout(() => { el.textContent = ""; }, 4000); } }
   /* ------------------------------------------------------------------ rendering */
   render() {
     const keepScroll = this.root.querySelector(".content") ? this.root.querySelector(".content").scrollTop : 0;
@@ -107,14 +110,14 @@ class Admin {
   }
   numInput(f, get, set) {
     const inp = h("input", { type: "number", class: "num", step: f.step, min: f.lo, max: f.hi, value: get() });
-    inp.addEventListener("change", () => { const v = parseFloat(inp.value); if (Number.isFinite(v)) { const c = this.clamp(f, v, get()); set(c); inp.value = c; this.dirty = true; this.markDirty(); } else inp.value = get(); });
+    inp.addEventListener("change", () => { const v = parseFloat(inp.value); if (Number.isFinite(v)) { const c = this.clamp(f, v, get()); set(c); inp.value = c; this.dirty = true; this.closeArmed = false; this.markDirty(); } else inp.value = get(); });
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") inp.blur(); });
     return inp;
   }
   markDirty() { if (!this.root.querySelector(".dirty")) { const bar = this.root.querySelector(".bar"); if (bar) bar.append(h("span", { class: "dirty", text: "UNSAVED CHANGES" })); } const n = this.root.querySelector(".note-live"); if (n) n.dispatchEvent(new Event("refresh")); }
   row(f) {
     if (f.kind === "info") return h("div", { class: "info", text: f.text });
-    if (f.kind === "action") return h("button", { class: "btn action", text: "[ " + f.label + " ]", onclick: (e) => { if (f.confirm && !confirm("Are you sure?")) return; f.fn(); } });
+    if (f.kind === "action") { let armed = false; const b = h("button", { class: "btn action", text: "[ " + f.label + " ]", onclick: () => { if (f.confirm && !armed) { armed = true; b.textContent = "[ CLICK AGAIN TO CONFIRM: " + f.label + " ]"; setTimeout(() => { armed = false; b.textContent = "[ " + f.label + " ]"; }, 4000); return; } f.fn(); } }); return b; }
     const w = this.work, label = h("div", { class: "label", text: f.label });
     if (f.kind === "bool") { const cb = h("input", { type: "checkbox" }); cb.checked = !!getp(w, f.path); cb.addEventListener("change", () => { setp(w, f.path, cb.checked); this.dirty = true; this.markDirty(); }); return h("div", { class: "row" }, label, h("label", { class: "tog" }, cb, h("span"))); }
     if (f.kind === "str") { const t = h("input", { type: "text", class: "txt", value: getp(w, f.path) }); t.addEventListener("input", () => { setp(w, f.path, t.value); this.dirty = true; this.markDirty(); }); return h("div", { class: "row" }, label, t); }
