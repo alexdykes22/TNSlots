@@ -4,7 +4,7 @@ A personal, local-play Tennessee Vols themed video slot, modelled on the "Zeus C
 5 reels x 3 rows, 20 paylines, a money-orb **hold & spin** bonus and a scatter-triggered **free games** bonus.
 Everything (art, sound effects, ominous music) is generated in code - there are no asset files to download.
 
-Runs on **Windows 11** and **Linux**. Python 3.9+ with `pygame` and `numpy`.
+Runs on **Windows 11** and **Linux**. Python 3.9+ with `pygame-ce` (imported as `pygame`) and `numpy`.
 
 ## Run it
 
