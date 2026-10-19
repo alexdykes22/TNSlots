@@ -24,21 +24,21 @@ const DEFAULT_CONFIG = {
       10.0
     ],
     "power_levels": [
-      20,
-      30,
       40,
-      50,
-      75,
+      60,
+      80,
       100,
       150,
       200,
       300,
-      500
+      400,
+      600,
+      800
     ]
   },
   "hit_rates": {
     "orb_bonus_one_in": 135,
-    "power_t_bonus_one_in": 800,
+    "power_t_bonus_one_in": 400,
     "orb_count_weights": [
       60,
       22,
@@ -54,44 +54,51 @@ const DEFAULT_CONFIG = {
     ],
     "free_orb_bonus_one_in": 0,
     "free_retrigger_one_in": 45,
-    "free_wheel_one_in": 300
+    "free_wheel_one_in": 200
   },
   "weights": {
     "base": {
+      "10": [
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
       "J": [
-        16,
-        16,
-        16,
-        16,
-        16
+        30,
+        30,
+        30,
+        30,
+        30
       ],
       "Q": [
-        15,
-        15,
-        15,
-        15,
-        15
+        28,
+        28,
+        28,
+        28,
+        28
       ],
       "K": [
-        14,
-        14,
-        14,
-        14,
-        14
+        26,
+        26,
+        26,
+        26,
+        26
       ],
       "A": [
-        13,
-        13,
-        13,
-        13,
-        13
+        24,
+        24,
+        24,
+        24,
+        24
       ],
       "CHECKER": [
-        11,
-        11,
-        11,
-        11,
-        11
+        10,
+        10,
+        10,
+        10,
+        10
       ],
       "FOOTBALL": [
         10,
@@ -122,11 +129,11 @@ const DEFAULT_CONFIG = {
         4
       ],
       "WILD": [
-        0,
-        5,
-        6,
-        5,
-        0
+        4,
+        10,
+        12,
+        10,
+        4
       ],
       "POWERT": [
         3,
@@ -151,40 +158,47 @@ const DEFAULT_CONFIG = {
       ]
     },
     "free": {
+      "10": [
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
       "J": [
-        14,
-        14,
-        14,
-        14,
-        14
+        30,
+        30,
+        30,
+        30,
+        30
       ],
       "Q": [
-        14,
-        14,
-        14,
-        14,
-        14
+        28,
+        28,
+        28,
+        28,
+        28
       ],
       "K": [
-        13,
-        13,
-        13,
-        13,
-        13
+        26,
+        26,
+        26,
+        26,
+        26
       ],
       "A": [
-        13,
-        13,
-        13,
-        13,
-        13
+        24,
+        24,
+        24,
+        24,
+        24
       ],
       "CHECKER": [
-        11,
-        11,
-        11,
-        11,
-        11
+        10,
+        10,
+        10,
+        10,
+        10
       ],
       "FOOTBALL": [
         10,
@@ -215,11 +229,11 @@ const DEFAULT_CONFIG = {
         5
       ],
       "WILD": [
-        0,
-        5,
-        6,
-        5,
-        0
+        4,
+        10,
+        12,
+        10,
+        4
       ],
       "POWERT": [
         2,
@@ -229,11 +243,11 @@ const DEFAULT_CONFIG = {
         2
       ],
       "ORB": [
-        5,
-        5,
-        5,
-        5,
-        5
+        7,
+        7,
+        7,
+        7,
+        7
       ],
       "WHEEL": [
         3,
@@ -245,55 +259,60 @@ const DEFAULT_CONFIG = {
     }
   },
   "paytable": {
+    "10": [
+      5,
+      14,
+      48
+    ],
     "J": [
       5,
-      15,
-      50
+      14,
+      48
     ],
     "Q": [
       5,
-      15,
-      60
+      14,
+      58
     ],
     "K": [
       8,
-      20,
-      75
+      19,
+      72
     ],
     "A": [
       8,
-      25,
-      100
+      24,
+      96
     ],
     "CHECKER": [
       12,
-      40,
-      150
+      38,
+      144
     ],
     "FOOTBALL": [
-      20,
-      50,
-      200
+      19,
+      48,
+      192
     ],
     "HELMET": [
-      25,
-      75,
-      300
+      24,
+      72,
+      288
     ],
     "TROPHY": [
-      40,
-      125,
-      500
+      38,
+      120,
+      480
     ],
     "SMOKEY": [
-      75,
-      250,
-      1000
+      72,
+      240,
+      960
     ],
     "WILD": [
-      75,
-      250,
-      1000
+      72,
+      240,
+      960
     ]
   },
   "scatter_pay": [
@@ -356,7 +375,7 @@ const DEFAULT_CONFIG = {
       1.4
     ],
     "respins": 3,
-    "respin_orb_chance": 0.033,
+    "respin_orb_chance": 0.017,
     "fill_board_grand": true
   },
   "smokey": {
@@ -421,11 +440,20 @@ const DEFAULT_CONFIG = {
       3
     ],
     "apply_free_multiplier": false
+  },
+  "stacks": {
+    "lengths": [
+      55,
+      22,
+      13,
+      7,
+      3
+    ]
   }
 };
 
-const SYMBOLS = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD","POWERT","ORB","WHEEL"];
-const PAYING = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD"];
+const SYMBOLS = ["10","J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD","POWERT","ORB","WHEEL"];
+const PAYING = ["10","J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD"];
 const JACKPOTS = ["mini","minor","major","grand"];
 const ORB_TYPES = ["cash","mini","minor","major","grand"];
 const VAR_LEN = ["denominations","power_levels","multipliers","jackpot_level_boost"];

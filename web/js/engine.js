@@ -1,13 +1,26 @@
 /* Pure game maths (no DOM). Mirrors tnslots/engine.py.
    Money is integer credits; dollars = credits * denomination. grid[reel][row]. */
 "use strict";
-const REELS = 5, ROWS = 3, LINES = 20;
-const PAYLINES = [
-  [1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],
-  [0,0,1,0,0],[2,2,1,2,2],[1,0,0,0,1],[1,2,2,2,1],[0,1,1,1,0],
-  [2,1,1,1,2],[1,0,1,0,1],[1,2,1,2,1],[0,1,0,1,0],[2,1,2,1,2],
-  [1,1,0,1,1],[1,1,2,1,1],[0,0,1,2,2],[2,2,1,0,0],[0,2,0,2,0],
-];
+const REELS = 5, ROWS = 5, LINES = 40;
+/* 40 paylines for the 5x5 grid: every "smooth" line (row changes by at most 1 per reel) is a candidate and the set is
+   chosen by farthest-point sampling so the lines are as different from each other as possible. Deterministic. */
+function makePaylines(n) {
+  const all = [];
+  const rec = (line) => {
+    if (line.length === REELS) { all.push(line.slice()); return; }
+    for (let d = -1; d <= 1; d++) { const r = line[line.length - 1] + d; if (r >= 0 && r < ROWS) { line.push(r); rec(line); line.pop(); } }
+  };
+  for (let r = 0; r < ROWS; r++) rec([r]);
+  const dist = (a, b) => { let d = 0; for (let i = 0; i < REELS; i++) d += Math.abs(a[i] - b[i]); return d; };
+  const chosen = all.filter((l) => l.every((r) => r === l[0]));        // the 5 straight rows first
+  while (chosen.length < n && chosen.length < all.length) {
+    let best = null, bd = -1;
+    for (const l of all) { if (chosen.includes(l)) continue; let m = 1e9; for (const c of chosen) m = Math.min(m, dist(l, c)); if (m > bd) { bd = m; best = l; } }
+    chosen.push(best);
+  }
+  return chosen;
+}
+const PAYLINES = makePaylines(LINES);
 const ALL_CELLS = [];
 for (let c = 0; c < REELS; c++) for (let r = 0; r < ROWS; r++) ALL_CELLS.push([c, r]);
 const pk = (p) => p[0] * 10 + p[1];            // cell key
@@ -114,79 +127,53 @@ class Engine {
     return syms[syms.length - 1];
   }
 
+  /* One reel column made of stacks of identical symbols (big stacks are the signature of this style of game). */
+  _column(mode, reel, exclude = []) {
+    const lens = this.cfg.stacks.lengths, col = [];
+    while (col.length < ROWS) {
+      const sym = this._pick(mode, reel, exclude);
+      let len = (sym === "ORB" || sym === "POWERT" || sym === "WHEEL") ? 1 : 1 + weightedIndex(this.rng, lens);
+      if (col.length === 0 && len > 1) len -= this.rng.int(0, len - 1);       // the first stack is usually cut off by the window
+      for (let i = 0; i < len && col.length < ROWS; i++) col.push(sym);
+    }
+    return col;
+  }
+  _grid(mode, exclude, overrides = {}) {
+    return Array.from({ length: REELS }, (_, c) => { const col = this._column(mode, c, exclude); for (let r = 0; r < ROWS; r++) { const o = overrides[pk([c, r])]; if (o) col[r] = o; } return col; });
+  }
+  _count(grid, sym) { let n = 0; for (const col of grid) for (const s of col) if (s === sym) n++; return n; }
   naturalGrid(mode, fixed = {}) {
     for (let tries = 0; tries < 300; tries++) {
-      const grid = []; let orbs = 0, ts = 0, ws = 0;
-      for (let c = 0; c < REELS; c++) {
-        const col = [];
-        for (let r = 0; r < ROWS; r++) {
-          const s = fixed[pk([c, r])] || this._pick(mode, c);
-          col.push(s); if (s === "ORB") orbs++; if (s === "POWERT") ts++; if (s === "WHEEL") ws++;
-        }
-        grid.push(col);
-      }
-      if (orbs < 6 && ts < 3 && ws < 3) return grid;
+      const grid = this._grid(mode, [], fixed);
+      if (this._count(grid, "ORB") < 6 && this._count(grid, "POWERT") < 3 && this._count(grid, "WHEEL") < 3) return grid;
     }
     return Array.from({ length: REELS }, (_, c) => Array.from({ length: ROWS }, (_, r) => ((c + r) % 2 ? "J" : "Q")));
   }
   orbTriggerGrid(mode, blocked = []) {
     const n = 6 + weightedIndex(this.rng, this.cfg.hit_rates.orb_count_weights);
-    const bl = new Set(blocked.map(pk));
-    const cells = ALL_CELLS.filter((p) => !bl.has(pk(p)));
+    const bl = new Set(blocked.map(pk)), cells = ALL_CELLS.filter((p) => !bl.has(pk(p)));
     this.rng.shuffle(cells);
-    const set = new Set(cells.slice(0, Math.min(n, 15)).map(pk));
-    return Array.from({ length: REELS }, (_, c) => Array.from({ length: ROWS }, (_, r) =>
-      set.has(pk([c, r])) ? "ORB" : this._pick(mode, c, ["ORB", "POWERT", "WHEEL"])));
+    const ov = {}; cells.slice(0, Math.min(n, ALL_CELLS.length)).forEach((p) => { ov[pk(p)] = "ORB"; });
+    return this._grid(mode, ["ORB", "POWERT", "WHEEL"], ov);
+  }
+  /* n distinct reels each get one special symbol (Power T / wheel), the rest is a normal board without accidental triggers. */
+  _specialGrid(mode, sym, n, blocked) {
+    const reels = [0, 1, 2, 3, 4]; this.rng.shuffle(reels);
+    const bl = new Set(blocked.map(pk)), ov = {};
+    for (const c of reels.slice(0, n)) {
+      let rows = Array.from({ length: ROWS }, (_, r) => r).filter((r) => !bl.has(pk([c, r])));
+      if (!rows.length) rows = Array.from({ length: ROWS }, (_, r) => r);
+      ov[pk([c, this.rng.choice(rows)])] = sym;
+    }
+    let grid;
+    for (let tries = 0; tries < 300; tries++) { grid = this._grid(mode, ["POWERT", "WHEEL"], ov); if (this._count(grid, "ORB") < 6) return grid; }
+    return grid;
   }
   tTriggerGrid(mode, n = null, blocked = []) {
     if (n === null) n = 3 + weightedIndex(this.rng, this.cfg.hit_rates.power_t_count_weights);
-    const reels = [0, 1, 2, 3, 4]; this.rng.shuffle(reels);
-    const bl = new Set(blocked.map(pk));
-    const tset = new Set();
-    for (const c of reels.slice(0, n)) {
-      let rows = [0, 1, 2].filter((r) => !bl.has(pk([c, r])));
-      if (!rows.length) rows = [0, 1, 2];
-      tset.add(pk([c, this.rng.choice(rows)]));
-    }
-    let grid;
-    for (let tries = 0; tries < 300; tries++) {
-      grid = []; let orbs = 0;
-      for (let c = 0; c < REELS; c++) {
-        const col = [];
-        for (let r = 0; r < ROWS; r++) {
-          if (tset.has(pk([c, r]))) col.push("POWERT");
-          else { const s = this._pick(mode, c, ["POWERT", "WHEEL"]); if (s === "ORB") orbs++; col.push(s); }
-        }
-        grid.push(col);
-      }
-      if (orbs < 6) return grid;
-    }
-    return grid;
+    return this._specialGrid(mode, "POWERT", n, blocked);
   }
-
-  wheelTriggerGrid(mode, blocked = []) {
-    const n = 3 + weightedIndex(this.rng, [90, 8, 2]);
-    const reels = [0, 1, 2, 3, 4]; this.rng.shuffle(reels);
-    const bl = new Set(blocked.map(pk)), wset = new Set();
-    for (const c of reels.slice(0, n)) {
-      let rows = [0, 1, 2].filter((r) => !bl.has(pk([c, r]))); if (!rows.length) rows = [0, 1, 2];
-      wset.add(pk([c, this.rng.choice(rows)]));
-    }
-    let grid;
-    for (let tries = 0; tries < 300; tries++) {
-      grid = []; let orbs = 0;
-      for (let c = 0; c < REELS; c++) {
-        const col = [];
-        for (let r = 0; r < ROWS; r++) {
-          if (wset.has(pk([c, r]))) col.push("WHEEL");
-          else { const s = this._pick(mode, c, ["POWERT", "WHEEL"]); if (s === "ORB") orbs++; col.push(s); }
-        }
-        grid.push(col);
-      }
-      if (orbs < 6) return grid;
-    }
-    return grid;
-  }
+  wheelTriggerGrid(mode, blocked = []) { return this._specialGrid(mode, "WHEEL", 3 + weightedIndex(this.rng, [90, 8, 2]), blocked); }
   /* A forced orb-link board (used by the checkerboard meter bonus): orbs only, no line wins. */
   makeOrbTrigger(bet, level) { return this.finish(this.orbTriggerGrid("base"), bet, level, 1, "orb"); }
   spinWheel(bet, level) {
@@ -269,7 +256,7 @@ class HoldAndSpin {
   total() {
     let t = 0;
     for (const o of Object.values(this.orbs)) t += this.value(o);
-    if (this.count() >= 15 && this.e.cfg.orbs.fill_board_grand) t += this.grandBonus();
+    if (this.count() >= ALL_CELLS.length && this.e.cfg.orbs.fill_board_grand) t += this.grandBonus();
     return t;
   }
   grandBonus() { return this.e.orbCredits(new Orb("grand"), this.bet, this.level); }
@@ -320,7 +307,7 @@ class HoldAndSpin {
     let ev = null;
     if (this.emptyCells().length && e.rng.random() < e.cfg.smokey.appear_chance) ev = this._smokey();
     if (fresh.length || (ev && ev.newOrbs.length)) this.respinsLeft = this.respinsTotal; else this.respinsLeft -= 1;
-    const full = this.count() >= 15;
+    const full = this.count() >= ALL_CELLS.length;
     if (full || this.respinsLeft <= 0) this.done = true;
     return { newOrbs: fresh, smokey: ev, respinsLeft: this.respinsLeft, full, done: this.done };
   }
@@ -343,7 +330,7 @@ class FreeGames {
     let newSticky = [];
     if (e.rng.random() < fg.smokey_wild_chance) {
       const cand = [];
-      for (let c = 1; c < 4; c++) for (let r = 0; r < ROWS; r++) if (!this.sticky.has(pk([c, r]))) cand.push([c, r]);
+      for (let c = 1; c < REELS - 1; c++) for (let r = 0; r < ROWS; r++) if (!this.sticky.has(pk([c, r]))) cand.push([c, r]);
       e.rng.shuffle(cand);
       const n = e.rng.int(fg.smokey_wild_min, Math.max(fg.smokey_wild_min, fg.smokey_wild_max));
       newSticky = cand.slice(0, n);
@@ -406,7 +393,7 @@ function simulateChunk(state, n) {
     if (r.trigger === "orb") {
       const hs = e.startHoldAndSpin(r.orbs, bet, level);
       const v = hs.playOut();
-      s.orbBonuses++; if (hs.count() >= 15) s.full++;
+      s.orbBonuses++; if (hs.count() >= ALL_CELLS.length) s.full++;
       s.orb += v; total += v;
     } else if (r.trigger === "power_t") {
       s.freeBonuses++;
@@ -451,4 +438,4 @@ function simResult(st) {
     seconds: (Date.now() - st.t0) / 1000,
   };
 }
-if (typeof module !== "undefined") module.exports = { Engine, RNG, Orb, HoldAndSpin, FreeGames, PAYLINES, ALL_CELLS, pk, unpk, newSim, simulateChunk, simResult, LINES, wheelLayout };
+if (typeof module !== "undefined") module.exports = { REELS, ROWS, Engine, RNG, Orb, HoldAndSpin, FreeGames, PAYLINES, ALL_CELLS, pk, unpk, newSim, simulateChunk, simResult, LINES, wheelLayout };

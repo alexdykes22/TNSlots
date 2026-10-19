@@ -26,7 +26,7 @@ class Admin {
     const bool = (label, path) => ({ label, path, kind: "bool" });
     const vec = (label, path, lo, hi, step, cols, note) => ({ label, path, kind: "vec", lo, hi, step, cols, note });
     const info = (text) => ({ kind: "info", text });
-    const weights = (mode) => [info("Relative weights per reel (higher = more frequent). Columns are reels 1-5. Wilds default to reels 2-4 only."),
+    const weights = (mode) => [info("Relative weights per reel (higher = more frequent). Columns are reels 1-5. Each pick fills a whole STACK of that symbol (see Symbol Stacks). Orbs, Power T and Wheel never stack."),
       ...SYMBOLS.map((s) => vec(s === "POWERT" ? "POWER T" : s === "ORB" ? "MONEY ORB" : s, "weights." + mode + "." + s, 0, 10000, 1, ["R1", "R2", "R3", "R4", "R5"])),
       info("Only the hit-rates page forces bonuses. These weights decide how often orbs / Power Ts / wilds show up as near-misses and line wins.")];
     this.pages = [
@@ -53,8 +53,11 @@ class Admin {
         { label: "Bonus it triggers", path: "collect.bonus", kind: "select", options: [["free_games", "Free Games (with Orb Pot + Wheel)"], ["orb_link", "Smokey's Orb Link"], ["random", "Random (50/50)"]] },
         int("Free games awarded by the meter", "collect.bonus_spins", 1, 999), bool("Carry extra checkerboards over after a bonus", "collect.carry_over"),
         info("Tip: how fast the meter fills depends on the CHECKER weight on the Reel Weights: Base page (about 1.5 checkerboards per spin by default).")]],
+      ["Symbol Stacks", [info("Reels are built from stacks of identical symbols. These weights set how tall each stack is (1 to 5 cells). Taller stacks mean bigger, rarer wins and more wild walls."),
+        vec("Stack height weights (1, 2, 3, 4, 5 cells)", "stacks.lengths", 0, 1000, 1, ["1", "2", "3", "4", "5"]),
+        info("Tip: change these, then run the Simulator. Hit frequency and RTP both move with stack height.")]],
       ["Reel Weights: Base", weights("base")], ["Reel Weights: Free", weights("free")],
-      ["Paytable", [info("Line pays are multiples of the LINE bet (total bet / 20). Columns: 3, 4, 5 of a kind."),
+      ["Paytable", [info("Line pays are multiples of the LINE bet (total bet / 40 paylines). Columns: 3, 4, 5 of a kind."),
         ...PAYING.slice().reverse().map((s) => vec(s, "paytable." + s, 0, 1e7, 5, ["3x", "4x", "5x"])), vec("Power T scatter (x TOTAL bet)", "scatter_pay", 0, 1e7, 1, ["3 T", "4 T", "5 T"])]],
       ["Orbs & Jackpots", [info("Orb values are multiples of the TOTAL bet, so every denomination and power level scales automatically."),
         vec("Cash orb value ladder (x total bet)", "orbs.value_ladder", 0, 1e6, 0.5), vec("Cash orb value weights", "orbs.value_weights", 0, 1e6, 1),
@@ -77,7 +80,7 @@ class Admin {
         vec("Wheel segments (Mini, Minor, Major, Grand)", "wheel.segments", 0, 12, 1, ["MINI", "MINOR", "MAJOR", "GRAND"], (w) => { const c = w.wheel.segments, t = c.reduce((a, b) => a + b, 0) || 1; return `${t} segments. Chance per spin: ` + ["Mini", "Minor", "Major", "Grand"].map((k, i) => `${k} ${(100 * c[i] / t).toFixed(1)}%`).join("  "); }),
         vec("Wheel spins for 3 / 4 / 5 WHEEL symbols", "wheel.spins_for_count", 1, 9, 1, ["3", "4", "5"]), bool("Free-game multiplier also boosts wheel wins", "wheel.apply_free_multiplier"),
         info("How often it triggers is set on the Bonus Hit Rates page (Jackpot Wheel per free spin). The WHEEL symbol's weights are on Reel Weights: Free.")]],
-      ["Bets & Denoms", [info("Total bet = denomination x power-level credits. Every prize is a multiple of the bet, so wins scale with both."),
+      ["Bets & Denoms", [info("Total bet = denomination x power-level credits, spread over 40 paylines. Every prize is a multiple of the bet, so wins scale with both."),
         vec("Denominations ($)", "bet.denominations", 0.01, 1000, 0.01), vec("Power levels (credits per spin)", "bet.power_levels", 1, 1e6, 5)]],
       ["Simulator", "sim"], ["Tools & Stats", "tools"],
     ];

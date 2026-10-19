@@ -8,9 +8,16 @@ const code = fs.readFileSync(dir + "config.js", "utf8") + "\n" + fs.readFileSync
   const cfg = clone(DEFAULT_CONFIG), e = new Engine(cfg, new RNG(5));
 
   // paylines / wild
-  let g = Array.from({ length: 5 }, () => ["J", "J", "J"]);
-  const [w20, t20] = e.evaluate(g, 20); ok(w20.length === 20 && Math.abs(t20 - 20 * 50) < 1e-9, "5 J on all 20 lines pays 20 x 50 line bets");
-  ok(Math.abs(e.evaluate(g, 500)[1] / t20 - 25) < 1e-9, "line pays scale with the bet");
+  ok(LINES === 40 && PAYLINES.length === 40 && new Set(PAYLINES.map((l) => l.join(""))).size === 40, "40 distinct paylines on the 5x5 grid");
+  ok(ROWS === 5 && REELS === 5 && ALL_CELLS.length === 25, "board is 5 x 5");
+  let g = Array.from({ length: 5 }, () => Array(5).fill("J"));
+  const [w40, t40] = e.evaluate(g, 40); ok(w40.length === 40 && Math.abs(t40 - 40 * cfg.paytable.J[2]) < 1e-9, "5 J on all 40 lines pays 40 x the 5-of-a-kind multiple of the line bet");
+  ok(Math.abs(e.evaluate(g, 800)[1] / t40 - 20) < 1e-9, "line pays scale with the bet");
+  // stacks: columns are built from runs of identical symbols; heavier stack weights give longer runs
+  const maxRun = (col) => { let best = 1, cur = 1; for (let i = 1; i < col.length; i++) { cur = col[i] === col[i - 1] ? cur + 1 : 1; best = Math.max(best, cur); } return best; };
+  const avgRun = (lengths) => { const c = clone(cfg); c.stacks.lengths = lengths; const en = new Engine(c, new RNG(4)); let t = 0; for (let i = 0; i < 400; i++) t += maxRun(en._column("base", 2, ["ORB", "POWERT", "WHEEL"])); return t / 400; };
+  const tall = avgRun([0, 0, 0, 0, 100]), flat = avgRun([100, 0, 0, 0, 0]);
+  ok(tall > flat + 1.5, "stack weights control stack height (avg longest stack " + tall.toFixed(2) + " vs " + flat.toFixed(2) + ")");
 
   // forced triggers and no accidental ones
   for (let i = 0; i < 300; i++) {

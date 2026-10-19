@@ -10,7 +10,19 @@ same maths, art, music, Smokey and admin panel as the desktop version. Click onc
 * Editing the source? Use `web/index.html` + `web/js/*.js`, then run `python3 web/build_single.py` to rebuild the one-file version.
 * Want a link you can open anywhere? Turn on GitHub Pages for the `web/` folder (or just upload the single file to any static host).
 
-### New in the browser version
+### New look and play (portrait, phone-style)
+
+The browser version is now laid out like a modern phone slot (and works on a phone too - tap to play, hold SPIN for auto):
+
+* **5 x 5 reels, 40 paylines, stacked symbols.** Reels are built from stacks of identical symbols; stack heights are configurable (admin > Symbol Stacks).
+  Winning cells get cyan boxes and the bottom bar cycles "LINE n PAYS $x".
+* **Big Smokey in the hero zone** over a night-game stadium, with the four jackpot plaques (GRAND / MAJOR / MINOR / MINI) at their live values for your bet.
+  He howls and fires bolts at the orbs during the Orb Link.
+* **Top HUD**: balance, level bar (grows with what you wager), last win, and a **Game Day Top Wins** leaderboard of your five biggest wins.
+* **Bottom controls**: denomination chip, - / + bet, a red **STOP** / green **SPIN!** button (STOP slams the reels, hold SPIN for auto), max bet, auto, turbo.
+* The Orb Link board is now 5 x 5 (fill all 25 for the Grand). Free Games, the Orb Pot, the Jackpot Wheel and the End Zone meter all live on the new board.
+
+### Features added earlier
 
 * **End Zone Meter** - checkerboard symbols that land in the base game are collected. At **300** (configurable) a bonus is forced:
   Free Games by default, or Smokey's Orb Link, or a random one of the two (admin > Checker Meter). Extra checkerboards carry over.

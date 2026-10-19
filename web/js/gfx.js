@@ -1,7 +1,7 @@
 /* Procedural art + effects for the Canvas renderer (port of tnslots/gfx.py). */
 "use strict";
-const W = 1280, H = 720, CELL = 150, GAP = 8, PITCH = CELL + GAP;
-const GX = Math.floor((W - (5 * CELL + 4 * GAP)) / 2), GY = 138;
+const W = 720, H = 1140, CELL = 112, GAP = 4, PITCH = CELL + GAP, K = CELL / 150;     // portrait, phone-shaped
+const GX = Math.floor((W - (5 * CELL + 4 * GAP)) / 2), GY = 418, HERO_Y = 110, HERO_H = 254;
 const ORANGE = [255, 130, 0], ORANGE_HI = [255, 176, 60], ORANGE_DK = [190, 85, 0], WHITE = [255, 255, 255], GOLD = [255, 205, 60];
 const ORB_COLORS = {
   cash: [[255, 190, 60], [255, 110, 0], [140, 50, 0]], mini: [[140, 255, 150], [40, 190, 70], [10, 90, 30]],
@@ -62,11 +62,13 @@ function line(ctx, S, pts, color, lw) {
   ctx.strokeStyle = rgb(color); ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.stroke();
 }
 function drawLetter(ctx, S, ch, color) {
-  tile(ctx, S, [48, 32, 70], [20, 12, 36], lerpC(color, [0, 0, 0], 0.3));
-  ctx.font = `${S * 0.86}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  const y = S * 0.55;
-  ctx.fillStyle = "#000"; ctx.fillText(ch, S / 2 + S * 0.012, y + S * 0.025);
-  const g = ctx.createLinearGradient(0, S * 0.15, 0, S * 0.85); g.addColorStop(0, rgb(lerpC(color, WHITE, 0.55))); g.addColorStop(0.45, rgb(color)); g.addColorStop(1, rgb(lerpC(color, [0, 0, 0], 0.25)));
+  const size = ch.length > 1 ? S * 0.7 : S * 0.92;
+  ctx.font = `${size}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
+  const y = S * 0.53;
+  ctx.lineWidth = S * 0.1; ctx.strokeStyle = "rgba(10,4,24,0.95)"; ctx.strokeText(ch, S / 2, y + S * 0.02);
+  ctx.lineWidth = S * 0.055; ctx.strokeStyle = rgb(lerpC(color, WHITE, 0.85)); ctx.strokeText(ch, S / 2, y);
+  const g = ctx.createLinearGradient(0, S * 0.1, 0, S * 0.92);
+  g.addColorStop(0, rgb(lerpC(color, WHITE, 0.6))); g.addColorStop(0.42, rgb(color)); g.addColorStop(0.55, rgb(scaleC(color, 0.7))); g.addColorStop(1, rgb(scaleC(color, 0.45)));
   ctx.fillStyle = g; ctx.fillText(ch, S / 2, y);
 }
 function drawChecker(ctx, S) {
@@ -77,7 +79,6 @@ function drawChecker(ctx, S) {
   ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.beginPath(); ctx.moveTo(m, m); ctx.lineTo(S - m, m); ctx.lineTo(m, S - m); ctx.closePath(); ctx.fill();
 }
 function drawFootball(ctx, S) {
-  tile(ctx, S, [40, 36, 70], [18, 12, 34], [150, 90, 40]);
   ctx.save(); ctx.translate(S / 2, S / 2); ctx.rotate(-28 * Math.PI / 180);
   const w = S * 0.78, h = S * 0.46;
   ctx.fillStyle = "#5c3014"; ctx.beginPath(); ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2); ctx.fill();
@@ -91,7 +92,6 @@ function drawFootball(ctx, S) {
   ctx.restore();
 }
 function drawHelmet(ctx, S) {
-  tile(ctx, S, [50, 34, 84], [22, 14, 40], ORANGE);
   const shell = [[0.16, 0.56], [0.18, 0.36], [0.30, 0.22], [0.50, 0.15], [0.70, 0.21], [0.80, 0.35], [0.83, 0.5], [0.79, 0.6], [0.70, 0.64], [0.66, 0.78], [0.44, 0.80], [0.28, 0.72]];
   poly(ctx, S, shell.map(([x, y]) => [x + 0.012, y + 0.015]), [0, 0, 0]);
   poly(ctx, S, shell, ORANGE);
@@ -106,7 +106,6 @@ function drawHelmet(ctx, S) {
   poly(ctx, S, shell, null, [0, 0, 0], Math.max(2, S / 70));
 }
 function drawTrophy(ctx, S) {
-  tile(ctx, S, [56, 36, 90], [22, 12, 40], GOLD);
   ctx.strokeStyle = "#d29614"; ctx.lineWidth = Math.max(4, S / 28);
   for (const sd of [-1, 1]) { ctx.beginPath(); ctx.ellipse((0.5 + sd * 0.25) * S, 0.35 * S, 0.09 * S, 0.13 * S, 0, 0, Math.PI * 2); ctx.stroke(); }
   const cup = [[0.28, 0.17], [0.72, 0.17], [0.68, 0.46], [0.58, 0.6], [0.42, 0.6], [0.32, 0.46]];
@@ -154,14 +153,14 @@ function drawSmokeyHead(ctx, S, mouthOpen, bg) {
   ctx.fillStyle = "rgb(255,220,160)"; ctx.fillRect(cx - 0.07 * S, 0.73 * S, 0.14 * S, 0.04 * S); ctx.fillRect(cx - 0.02 * S, 0.73 * S, 0.04 * S, 0.14 * S);
 }
 function drawWild(ctx, S) {
-  tile(ctx, S, [120, 40, 0], [40, 8, 4], ORANGE_HI);
-  const bolt = [[0.58, 0.08], [0.28, 0.5], [0.46, 0.5], [0.38, 0.84], [0.74, 0.4], [0.54, 0.4], [0.68, 0.08]];
-  poly(ctx, S, bolt.map(([x, y]) => [x + 0.02, y + 0.02]), [255, 120, 0]);
-  poly(ctx, S, bolt, [255, 240, 120]);
-  poly(ctx, S, [[0.58, 0.1], [0.36, 0.44], [0.5, 0.44], [0.56, 0.2]], WHITE);
-  poly(ctx, S, bolt, null, ORANGE_DK, Math.max(2, S / 80));
-  ctx.font = `${S * 0.25}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillStyle = "#000"; ctx.fillText("WILD", S / 2 + S / 80, S * 0.86 + S / 80); ctx.fillStyle = "#fff"; ctx.fillText("WILD", S / 2, S * 0.86);
+  const c = S / 2, r = S * 0.42, g = ctx.createRadialGradient(c, c * 0.8, r * 0.1, c, c, r);
+  g.addColorStop(0, "rgb(255,190,60)"); g.addColorStop(0.6, "rgb(230,90,0)"); g.addColorStop(1, "rgb(120,30,0)");
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, r, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = rgb(GOLD); ctx.lineWidth = S * 0.045; ctx.stroke(); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = S * 0.012; ctx.beginPath(); ctx.arc(c, c, r - S * 0.035, 0, 6.283); ctx.stroke();
+  const bolt = [[0.58, 0.1], [0.3, 0.5], [0.47, 0.5], [0.4, 0.8], [0.72, 0.4], [0.54, 0.4], [0.66, 0.1]];
+  poly(ctx, S, bolt.map(([x, y]) => [x + 0.015, y + 0.015]), [120, 30, 0]);
+  poly(ctx, S, bolt, [255, 245, 150]); poly(ctx, S, [[0.58, 0.12], [0.38, 0.44], [0.5, 0.44], [0.56, 0.2]], WHITE);
+  ctx.font = `${S * 0.2}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round"; ctx.lineWidth = S * 0.05; ctx.strokeStyle = "#3a1000"; ctx.strokeText("WILD", c, S * 0.84); ctx.fillStyle = "#fff"; ctx.fillText("WILD", c, S * 0.84);
 }
 const T_PTS = [[0.10, 0.20], [0.90, 0.20], [0.90, 0.40], [0.60, 0.40], [0.60, 0.84], [0.40, 0.84], [0.40, 0.40], [0.10, 0.40]];
 function drawPowerT(ctx, S) {
@@ -202,7 +201,6 @@ function drawWheelDisc(ctx, cx, cy, R, layout, angle = 0, o = {}) {
   ctx.restore();
 }
 function drawWheelSymbol(ctx, S) {
-  tile(ctx, S, [40, 24, 76], [14, 8, 34], [255, 215, 110]);
   const layout = ["mini", "minor", "mini", "major", "mini", "minor", "mini", "grand"];
   drawWheelDisc(ctx, S / 2, S * 0.5, S * 0.36, layout, -0.2, { thin: true });
   ctx.strokeStyle = rgb(GOLD); ctx.lineWidth = S * 0.045; ctx.beginPath(); ctx.arc(S / 2, S * 0.5, S * 0.37, 0, 6.283); ctx.stroke();
@@ -217,14 +215,53 @@ function drawCheckerIcon(ctx, x, y, s) {
   ctx.strokeStyle = "rgba(20,8,0,0.9)"; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, s, s);
 }
 
+/* ------------------------------------------------------------- hero zone art */
+function seeded(seed) { let a = seed; return () => { a = (a * 16807) % 2147483647; return a / 2147483647; }; }
+/* Night game at Neyland: floodlight towers, crowd bokeh, the checkerboard end zone. */
+function drawStadium(ctx, w, h, acc) {
+  const r = seeded(99);
+  const sky = ctx.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, "rgb(6,6,26)"); sky.addColorStop(0.5, "rgb(34,20,72)"); sky.addColorStop(0.82, rgb(lerpC([60, 28, 40], acc, 0.45))); sky.addColorStop(1, "rgb(20,10,10)");
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+  // stands
+  ctx.fillStyle = "rgb(14,10,30)"; ctx.beginPath(); ctx.moveTo(0, h * 0.74); for (let x = 0; x <= w; x += 20) ctx.lineTo(x, h * (0.5 + 0.06 * Math.sin(x * 0.02) + 0.04 * r())); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath(); ctx.fill();
+  for (let i = 0; i < 520; i++) { const x = r() * w, y = h * (0.5 + 0.3 * r()), c = r(); ctx.fillStyle = c < 0.5 ? rgb(ORANGE, 0.35 + 0.5 * r()) : c < 0.8 ? "rgba(255,255,255,0.45)" : "rgba(255,220,120,0.5)"; ctx.fillRect(x, y, 1.6, 1.6); }
+  // light towers
+  for (const tx of [34, 150, 570, 686]) {
+    ctx.fillStyle = "rgb(30,24,50)"; ctx.fillRect(tx - 2, 28, 4, h * 0.6);
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { ctx.fillStyle = "rgb(255,248,210)"; ctx.fillRect(tx - 17 + j * 12, 4 + i * 9, 9, 6); }
+    addGlow(ctx, tx, 24, 70, [140, 130, 90], 0.9);
+  }
+  // end-zone checkerboard
+  const fy = h * 0.8;
+  for (let i = -3; i < 30; i++) for (let j = 0; j < 3; j++) if ((i + j) % 2 === 0) {
+    const y0 = fy + j * (h - fy) / 3, y1 = fy + (j + 1) * (h - fy) / 3, k0 = 0.5 + 0.5 * j, k1 = 0.5 + 0.5 * (j + 1), x0 = i * 28;
+    ctx.fillStyle = rgb(ORANGE, 0.55); ctx.beginPath(); ctx.moveTo(w / 2 + (x0 - w / 2) * k0, y0); ctx.lineTo(w / 2 + (x0 + 28 - w / 2) * k0, y0); ctx.lineTo(w / 2 + (x0 + 28 - w / 2) * k1, y1); ctx.lineTo(w / 2 + (x0 - w / 2) * k1, y1); ctx.closePath(); ctx.fill();
+  }
+  const v = ctx.createRadialGradient(w / 2, h / 2, h * 0.3, w / 2, h / 2, h * 1.1); v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,0.5)"); ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
+}
+/* Smokey, big: head + shoulders in an orange jersey with the Power T. */
+function drawSmokeyHero(ctx, S, mouthOpen) {
+  // torso
+  const jg = ctx.createLinearGradient(0, S * 0.6, 0, S); jg.addColorStop(0, "rgb(255,150,30)"); jg.addColorStop(1, "rgb(170,70,0)");
+  ctx.fillStyle = jg; ctx.beginPath(); ctx.moveTo(0, S); ctx.bezierCurveTo(0, S * 0.78, S * 0.14, S * 0.68, S * 0.34, S * 0.64); ctx.lineTo(S * 0.66, S * 0.64); ctx.bezierCurveTo(S * 0.86, S * 0.68, S, S * 0.78, S, S); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgb(110,45,0)"; ctx.lineWidth = S * 0.012; ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.beginPath(); ctx.moveTo(S * 0.36, S * 0.645); ctx.lineTo(S * 0.5, S * 0.76); ctx.lineTo(S * 0.64, S * 0.645); ctx.lineTo(S * 0.6, S * 0.64); ctx.lineTo(S * 0.5, S * 0.72); ctx.lineTo(S * 0.4, S * 0.64); ctx.closePath(); ctx.fill();
+  ctx.save(); ctx.translate(S * 0.5, S * 0.9); ctx.scale(0.3, 0.3); ctx.translate(-S * 0.5, -S * 0.5);
+  poly(ctx, S, T_PTS, WHITE, [120, 50, 0], S * 0.03); ctx.restore();
+  // head
+  const hd = mkCanvas(S, S), hx = hd.getContext("2d"); drawSmokeyHead(hx, S, mouthOpen, false);
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = S * 0.03; ctx.drawImage(hd, S * 0.02, -S * 0.02, S * 0.96, S * 0.96); ctx.restore();
+}
+function metalGradient(ctx, x, y, w, h) { const g = ctx.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, "rgb(255,236,160)"); g.addColorStop(0.3, "rgb(214,150,30)"); g.addColorStop(0.55, "rgb(255,220,120)"); g.addColorStop(0.8, "rgb(170,100,10)"); g.addColorStop(1, "rgb(255,214,110)"); return g; }
+
 class Art {
   constructor() {
     const R = 2, S = CELL * R, mk = (fn) => { const c = mkCanvas(S, S), x = c.getContext("2d"); fn(x, S); return c; };
     this.sym = {
-      J: mk((x, s) => drawLetter(x, s, "J", ORANGE)), Q: mk((x, s) => drawLetter(x, s, "Q", WHITE)),
-      K: mk((x, s) => drawLetter(x, s, "K", ORANGE_HI)), A: mk((x, s) => drawLetter(x, s, "A", [235, 235, 245])),
+      "10": mk((x, s) => drawLetter(x, s, "10", [235, 70, 80])), J: mk((x, s) => drawLetter(x, s, "J", [70, 140, 255])), Q: mk((x, s) => drawLetter(x, s, "Q", [255, 200, 60])),
+      K: mk((x, s) => drawLetter(x, s, "K", [255, 135, 20])), A: mk((x, s) => drawLetter(x, s, "A", [200, 100, 255])),
       CHECKER: mk(drawChecker), WHEEL: mk(drawWheelSymbol), FOOTBALL: mk(drawFootball), HELMET: mk(drawHelmet), TROPHY: mk(drawTrophy),
-      SMOKEY: mk((x, s) => drawSmokeyHead(x, s, false, true)), WILD: mk(drawWild), POWERT: mk(drawPowerT),
+      SMOKEY: mk((x, s) => { x.save(); x.translate(s * 0.04, -s * 0.02); x.scale(0.92, 0.92); drawSmokeyHead(x, s, false, false); x.restore(); }), WILD: mk(drawWild), POWERT: mk(drawPowerT),
     };
     this.orb = {}; for (const k of Object.keys(ORB_COLORS)) this.orb[k] = mk((x, s) => drawOrb(x, s, k));
     this.sym.ORB = this.orb.cash;
@@ -236,12 +273,17 @@ class Art {
       this.blur[n] = c;
     }
     this.empty = mk((x, s) => {
-      fillRR(x, 0, 0, s, s, s * 0.12, "rgba(14,10,26,0.92)", "rgb(90,56,20)", 4);
-      fillRR(x, s * 0.1, s * 0.1, s * 0.8, s * 0.8, s * 0.08, null, "rgb(30,22,50)", 2);
+      const g = x.createLinearGradient(0, 0, 0, s); g.addColorStop(0, "rgb(20,24,56)"); g.addColorStop(1, "rgb(8,10,28)");
+      fillRR(x, 0, 0, s, s, s * 0.06, g, "rgba(214,160,60,0.45)", 2);
     });
+    this.cellBg = this.empty;
     this.smokey = { idle: mkCanvas(520, 520), howl: mkCanvas(520, 520) };
     drawSmokeyHead(this.smokey.idle.getContext("2d"), 520, false, false);
     drawSmokeyHead(this.smokey.howl.getContext("2d"), 520, true, false);
+    this.hero = { idle: mkCanvas(600, 600), howl: mkCanvas(600, 600) };
+    drawSmokeyHero(this.hero.idle.getContext("2d"), 600, false); drawSmokeyHero(this.hero.howl.getContext("2d"), 600, true);
+    this.stadium = {};
+    for (const [name, acc] of Object.entries(THEME_ACC)) { const c = mkCanvas(W, HERO_H * 2 / 2), x = c.getContext("2d"); drawStadium(x, W, HERO_H, acc); this.stadium[name] = c; }
     this.powerTBig = mkCanvas(512, 512); const tx = this.powerTBig.getContext("2d"); poly(tx, 512, T_PTS, ORANGE);
     this.powerTOutline = mkCanvas(256, 256); const ox = this.powerTOutline.getContext("2d");
     poly(ox, 256, T_PTS, WHITE, ORANGE, 14);

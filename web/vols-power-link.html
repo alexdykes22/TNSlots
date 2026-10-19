@@ -7,9 +7,9 @@
 <style>
   :root { color-scheme: dark; --bg:#07040f; --panel:#14091f; --edge:#6e4214; --orange:#ff8200; --text:#f3eefa; --dim:#a9a0bd; --good:#157a32; }
   * { box-sizing: border-box; }
-  html, body { margin:0; height:100%; background:var(--bg); color:var(--text); overflow:hidden; font-family: system-ui, "Segoe UI", Roboto, sans-serif; }
+  html, body { margin:0; height:100%; background: radial-gradient(ellipse at 50% 30%, #2a1038 0%, #0b0618 55%, #050210 100%); color:var(--text); overflow:hidden; font-family: system-ui, "Segoe UI", Roboto, sans-serif; }
   body { display:flex; align-items:center; justify-content:center; }
-  canvas#game { width:min(100vw, 177.78vh); height:min(100vh, 56.25vw); background:#000; touch-action:none; outline:none; display:block; }
+  canvas#game { width:min(100vw, 63.16vh); height:min(100vh, 158.33vw); background:#000; touch-action:none; outline:none; display:block; box-shadow:0 0 60px rgba(255,130,0,.18); }
   #admin { display:none; position:fixed; inset:0; z-index:10; background:var(--bg); flex-direction:column; padding:14px 18px 10px; overflow:hidden; }
   #admin.open { display:flex; }
   #admin .head { font:900 34px Impact, "Arial Black", sans-serif; color:var(--orange); text-align:center; letter-spacing:.04em; text-shadow:0 2px 0 #3a1500; flex:none; }
@@ -77,21 +77,21 @@ const DEFAULT_CONFIG = {
       10.0
     ],
     "power_levels": [
-      20,
-      30,
       40,
-      50,
-      75,
+      60,
+      80,
       100,
       150,
       200,
       300,
-      500
+      400,
+      600,
+      800
     ]
   },
   "hit_rates": {
     "orb_bonus_one_in": 135,
-    "power_t_bonus_one_in": 800,
+    "power_t_bonus_one_in": 400,
     "orb_count_weights": [
       60,
       22,
@@ -107,44 +107,51 @@ const DEFAULT_CONFIG = {
     ],
     "free_orb_bonus_one_in": 0,
     "free_retrigger_one_in": 45,
-    "free_wheel_one_in": 300
+    "free_wheel_one_in": 200
   },
   "weights": {
     "base": {
+      "10": [
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
       "J": [
-        16,
-        16,
-        16,
-        16,
-        16
+        30,
+        30,
+        30,
+        30,
+        30
       ],
       "Q": [
-        15,
-        15,
-        15,
-        15,
-        15
+        28,
+        28,
+        28,
+        28,
+        28
       ],
       "K": [
-        14,
-        14,
-        14,
-        14,
-        14
+        26,
+        26,
+        26,
+        26,
+        26
       ],
       "A": [
-        13,
-        13,
-        13,
-        13,
-        13
+        24,
+        24,
+        24,
+        24,
+        24
       ],
       "CHECKER": [
-        11,
-        11,
-        11,
-        11,
-        11
+        10,
+        10,
+        10,
+        10,
+        10
       ],
       "FOOTBALL": [
         10,
@@ -175,11 +182,11 @@ const DEFAULT_CONFIG = {
         4
       ],
       "WILD": [
-        0,
-        5,
-        6,
-        5,
-        0
+        4,
+        10,
+        12,
+        10,
+        4
       ],
       "POWERT": [
         3,
@@ -204,40 +211,47 @@ const DEFAULT_CONFIG = {
       ]
     },
     "free": {
+      "10": [
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
       "J": [
-        14,
-        14,
-        14,
-        14,
-        14
+        30,
+        30,
+        30,
+        30,
+        30
       ],
       "Q": [
-        14,
-        14,
-        14,
-        14,
-        14
+        28,
+        28,
+        28,
+        28,
+        28
       ],
       "K": [
-        13,
-        13,
-        13,
-        13,
-        13
+        26,
+        26,
+        26,
+        26,
+        26
       ],
       "A": [
-        13,
-        13,
-        13,
-        13,
-        13
+        24,
+        24,
+        24,
+        24,
+        24
       ],
       "CHECKER": [
-        11,
-        11,
-        11,
-        11,
-        11
+        10,
+        10,
+        10,
+        10,
+        10
       ],
       "FOOTBALL": [
         10,
@@ -268,11 +282,11 @@ const DEFAULT_CONFIG = {
         5
       ],
       "WILD": [
-        0,
-        5,
-        6,
-        5,
-        0
+        4,
+        10,
+        12,
+        10,
+        4
       ],
       "POWERT": [
         2,
@@ -282,11 +296,11 @@ const DEFAULT_CONFIG = {
         2
       ],
       "ORB": [
-        5,
-        5,
-        5,
-        5,
-        5
+        7,
+        7,
+        7,
+        7,
+        7
       ],
       "WHEEL": [
         3,
@@ -298,55 +312,60 @@ const DEFAULT_CONFIG = {
     }
   },
   "paytable": {
+    "10": [
+      5,
+      14,
+      48
+    ],
     "J": [
       5,
-      15,
-      50
+      14,
+      48
     ],
     "Q": [
       5,
-      15,
-      60
+      14,
+      58
     ],
     "K": [
       8,
-      20,
-      75
+      19,
+      72
     ],
     "A": [
       8,
-      25,
-      100
+      24,
+      96
     ],
     "CHECKER": [
       12,
-      40,
-      150
+      38,
+      144
     ],
     "FOOTBALL": [
-      20,
-      50,
-      200
+      19,
+      48,
+      192
     ],
     "HELMET": [
-      25,
-      75,
-      300
+      24,
+      72,
+      288
     ],
     "TROPHY": [
-      40,
-      125,
-      500
+      38,
+      120,
+      480
     ],
     "SMOKEY": [
-      75,
-      250,
-      1000
+      72,
+      240,
+      960
     ],
     "WILD": [
-      75,
-      250,
-      1000
+      72,
+      240,
+      960
     ]
   },
   "scatter_pay": [
@@ -409,7 +428,7 @@ const DEFAULT_CONFIG = {
       1.4
     ],
     "respins": 3,
-    "respin_orb_chance": 0.033,
+    "respin_orb_chance": 0.017,
     "fill_board_grand": true
   },
   "smokey": {
@@ -474,11 +493,20 @@ const DEFAULT_CONFIG = {
       3
     ],
     "apply_free_multiplier": false
+  },
+  "stacks": {
+    "lengths": [
+      55,
+      22,
+      13,
+      7,
+      3
+    ]
   }
 };
 
-const SYMBOLS = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD","POWERT","ORB","WHEEL"];
-const PAYING = ["J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD"];
+const SYMBOLS = ["10","J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD","POWERT","ORB","WHEEL"];
+const PAYING = ["10","J","Q","K","A","CHECKER","FOOTBALL","HELMET","TROPHY","SMOKEY","WILD"];
 const JACKPOTS = ["mini","minor","major","grand"];
 const ORB_TYPES = ["cash","mini","minor","major","grand"];
 const VAR_LEN = ["denominations","power_levels","multipliers","jackpot_level_boost"];
@@ -524,13 +552,26 @@ if (typeof module !== "undefined") module.exports = { DEFAULT_CONFIG, SYMBOLS, P
 /* Pure game maths (no DOM). Mirrors tnslots/engine.py.
    Money is integer credits; dollars = credits * denomination. grid[reel][row]. */
 "use strict";
-const REELS = 5, ROWS = 3, LINES = 20;
-const PAYLINES = [
-  [1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],
-  [0,0,1,0,0],[2,2,1,2,2],[1,0,0,0,1],[1,2,2,2,1],[0,1,1,1,0],
-  [2,1,1,1,2],[1,0,1,0,1],[1,2,1,2,1],[0,1,0,1,0],[2,1,2,1,2],
-  [1,1,0,1,1],[1,1,2,1,1],[0,0,1,2,2],[2,2,1,0,0],[0,2,0,2,0],
-];
+const REELS = 5, ROWS = 5, LINES = 40;
+/* 40 paylines for the 5x5 grid: every "smooth" line (row changes by at most 1 per reel) is a candidate and the set is
+   chosen by farthest-point sampling so the lines are as different from each other as possible. Deterministic. */
+function makePaylines(n) {
+  const all = [];
+  const rec = (line) => {
+    if (line.length === REELS) { all.push(line.slice()); return; }
+    for (let d = -1; d <= 1; d++) { const r = line[line.length - 1] + d; if (r >= 0 && r < ROWS) { line.push(r); rec(line); line.pop(); } }
+  };
+  for (let r = 0; r < ROWS; r++) rec([r]);
+  const dist = (a, b) => { let d = 0; for (let i = 0; i < REELS; i++) d += Math.abs(a[i] - b[i]); return d; };
+  const chosen = all.filter((l) => l.every((r) => r === l[0]));        // the 5 straight rows first
+  while (chosen.length < n && chosen.length < all.length) {
+    let best = null, bd = -1;
+    for (const l of all) { if (chosen.includes(l)) continue; let m = 1e9; for (const c of chosen) m = Math.min(m, dist(l, c)); if (m > bd) { bd = m; best = l; } }
+    chosen.push(best);
+  }
+  return chosen;
+}
+const PAYLINES = makePaylines(LINES);
 const ALL_CELLS = [];
 for (let c = 0; c < REELS; c++) for (let r = 0; r < ROWS; r++) ALL_CELLS.push([c, r]);
 const pk = (p) => p[0] * 10 + p[1];            // cell key
@@ -637,79 +678,53 @@ class Engine {
     return syms[syms.length - 1];
   }
 
+  /* One reel column made of stacks of identical symbols (big stacks are the signature of this style of game). */
+  _column(mode, reel, exclude = []) {
+    const lens = this.cfg.stacks.lengths, col = [];
+    while (col.length < ROWS) {
+      const sym = this._pick(mode, reel, exclude);
+      let len = (sym === "ORB" || sym === "POWERT" || sym === "WHEEL") ? 1 : 1 + weightedIndex(this.rng, lens);
+      if (col.length === 0 && len > 1) len -= this.rng.int(0, len - 1);       // the first stack is usually cut off by the window
+      for (let i = 0; i < len && col.length < ROWS; i++) col.push(sym);
+    }
+    return col;
+  }
+  _grid(mode, exclude, overrides = {}) {
+    return Array.from({ length: REELS }, (_, c) => { const col = this._column(mode, c, exclude); for (let r = 0; r < ROWS; r++) { const o = overrides[pk([c, r])]; if (o) col[r] = o; } return col; });
+  }
+  _count(grid, sym) { let n = 0; for (const col of grid) for (const s of col) if (s === sym) n++; return n; }
   naturalGrid(mode, fixed = {}) {
     for (let tries = 0; tries < 300; tries++) {
-      const grid = []; let orbs = 0, ts = 0, ws = 0;
-      for (let c = 0; c < REELS; c++) {
-        const col = [];
-        for (let r = 0; r < ROWS; r++) {
-          const s = fixed[pk([c, r])] || this._pick(mode, c);
-          col.push(s); if (s === "ORB") orbs++; if (s === "POWERT") ts++; if (s === "WHEEL") ws++;
-        }
-        grid.push(col);
-      }
-      if (orbs < 6 && ts < 3 && ws < 3) return grid;
+      const grid = this._grid(mode, [], fixed);
+      if (this._count(grid, "ORB") < 6 && this._count(grid, "POWERT") < 3 && this._count(grid, "WHEEL") < 3) return grid;
     }
     return Array.from({ length: REELS }, (_, c) => Array.from({ length: ROWS }, (_, r) => ((c + r) % 2 ? "J" : "Q")));
   }
   orbTriggerGrid(mode, blocked = []) {
     const n = 6 + weightedIndex(this.rng, this.cfg.hit_rates.orb_count_weights);
-    const bl = new Set(blocked.map(pk));
-    const cells = ALL_CELLS.filter((p) => !bl.has(pk(p)));
+    const bl = new Set(blocked.map(pk)), cells = ALL_CELLS.filter((p) => !bl.has(pk(p)));
     this.rng.shuffle(cells);
-    const set = new Set(cells.slice(0, Math.min(n, 15)).map(pk));
-    return Array.from({ length: REELS }, (_, c) => Array.from({ length: ROWS }, (_, r) =>
-      set.has(pk([c, r])) ? "ORB" : this._pick(mode, c, ["ORB", "POWERT", "WHEEL"])));
+    const ov = {}; cells.slice(0, Math.min(n, ALL_CELLS.length)).forEach((p) => { ov[pk(p)] = "ORB"; });
+    return this._grid(mode, ["ORB", "POWERT", "WHEEL"], ov);
+  }
+  /* n distinct reels each get one special symbol (Power T / wheel), the rest is a normal board without accidental triggers. */
+  _specialGrid(mode, sym, n, blocked) {
+    const reels = [0, 1, 2, 3, 4]; this.rng.shuffle(reels);
+    const bl = new Set(blocked.map(pk)), ov = {};
+    for (const c of reels.slice(0, n)) {
+      let rows = Array.from({ length: ROWS }, (_, r) => r).filter((r) => !bl.has(pk([c, r])));
+      if (!rows.length) rows = Array.from({ length: ROWS }, (_, r) => r);
+      ov[pk([c, this.rng.choice(rows)])] = sym;
+    }
+    let grid;
+    for (let tries = 0; tries < 300; tries++) { grid = this._grid(mode, ["POWERT", "WHEEL"], ov); if (this._count(grid, "ORB") < 6) return grid; }
+    return grid;
   }
   tTriggerGrid(mode, n = null, blocked = []) {
     if (n === null) n = 3 + weightedIndex(this.rng, this.cfg.hit_rates.power_t_count_weights);
-    const reels = [0, 1, 2, 3, 4]; this.rng.shuffle(reels);
-    const bl = new Set(blocked.map(pk));
-    const tset = new Set();
-    for (const c of reels.slice(0, n)) {
-      let rows = [0, 1, 2].filter((r) => !bl.has(pk([c, r])));
-      if (!rows.length) rows = [0, 1, 2];
-      tset.add(pk([c, this.rng.choice(rows)]));
-    }
-    let grid;
-    for (let tries = 0; tries < 300; tries++) {
-      grid = []; let orbs = 0;
-      for (let c = 0; c < REELS; c++) {
-        const col = [];
-        for (let r = 0; r < ROWS; r++) {
-          if (tset.has(pk([c, r]))) col.push("POWERT");
-          else { const s = this._pick(mode, c, ["POWERT", "WHEEL"]); if (s === "ORB") orbs++; col.push(s); }
-        }
-        grid.push(col);
-      }
-      if (orbs < 6) return grid;
-    }
-    return grid;
+    return this._specialGrid(mode, "POWERT", n, blocked);
   }
-
-  wheelTriggerGrid(mode, blocked = []) {
-    const n = 3 + weightedIndex(this.rng, [90, 8, 2]);
-    const reels = [0, 1, 2, 3, 4]; this.rng.shuffle(reels);
-    const bl = new Set(blocked.map(pk)), wset = new Set();
-    for (const c of reels.slice(0, n)) {
-      let rows = [0, 1, 2].filter((r) => !bl.has(pk([c, r]))); if (!rows.length) rows = [0, 1, 2];
-      wset.add(pk([c, this.rng.choice(rows)]));
-    }
-    let grid;
-    for (let tries = 0; tries < 300; tries++) {
-      grid = []; let orbs = 0;
-      for (let c = 0; c < REELS; c++) {
-        const col = [];
-        for (let r = 0; r < ROWS; r++) {
-          if (wset.has(pk([c, r]))) col.push("WHEEL");
-          else { const s = this._pick(mode, c, ["POWERT", "WHEEL"]); if (s === "ORB") orbs++; col.push(s); }
-        }
-        grid.push(col);
-      }
-      if (orbs < 6) return grid;
-    }
-    return grid;
-  }
+  wheelTriggerGrid(mode, blocked = []) { return this._specialGrid(mode, "WHEEL", 3 + weightedIndex(this.rng, [90, 8, 2]), blocked); }
   /* A forced orb-link board (used by the checkerboard meter bonus): orbs only, no line wins. */
   makeOrbTrigger(bet, level) { return this.finish(this.orbTriggerGrid("base"), bet, level, 1, "orb"); }
   spinWheel(bet, level) {
@@ -792,7 +807,7 @@ class HoldAndSpin {
   total() {
     let t = 0;
     for (const o of Object.values(this.orbs)) t += this.value(o);
-    if (this.count() >= 15 && this.e.cfg.orbs.fill_board_grand) t += this.grandBonus();
+    if (this.count() >= ALL_CELLS.length && this.e.cfg.orbs.fill_board_grand) t += this.grandBonus();
     return t;
   }
   grandBonus() { return this.e.orbCredits(new Orb("grand"), this.bet, this.level); }
@@ -843,7 +858,7 @@ class HoldAndSpin {
     let ev = null;
     if (this.emptyCells().length && e.rng.random() < e.cfg.smokey.appear_chance) ev = this._smokey();
     if (fresh.length || (ev && ev.newOrbs.length)) this.respinsLeft = this.respinsTotal; else this.respinsLeft -= 1;
-    const full = this.count() >= 15;
+    const full = this.count() >= ALL_CELLS.length;
     if (full || this.respinsLeft <= 0) this.done = true;
     return { newOrbs: fresh, smokey: ev, respinsLeft: this.respinsLeft, full, done: this.done };
   }
@@ -866,7 +881,7 @@ class FreeGames {
     let newSticky = [];
     if (e.rng.random() < fg.smokey_wild_chance) {
       const cand = [];
-      for (let c = 1; c < 4; c++) for (let r = 0; r < ROWS; r++) if (!this.sticky.has(pk([c, r]))) cand.push([c, r]);
+      for (let c = 1; c < REELS - 1; c++) for (let r = 0; r < ROWS; r++) if (!this.sticky.has(pk([c, r]))) cand.push([c, r]);
       e.rng.shuffle(cand);
       const n = e.rng.int(fg.smokey_wild_min, Math.max(fg.smokey_wild_min, fg.smokey_wild_max));
       newSticky = cand.slice(0, n);
@@ -929,7 +944,7 @@ function simulateChunk(state, n) {
     if (r.trigger === "orb") {
       const hs = e.startHoldAndSpin(r.orbs, bet, level);
       const v = hs.playOut();
-      s.orbBonuses++; if (hs.count() >= 15) s.full++;
+      s.orbBonuses++; if (hs.count() >= ALL_CELLS.length) s.full++;
       s.orb += v; total += v;
     } else if (r.trigger === "power_t") {
       s.freeBonuses++;
@@ -974,7 +989,7 @@ function simResult(st) {
     seconds: (Date.now() - st.t0) / 1000,
   };
 }
-if (typeof module !== "undefined") module.exports = { Engine, RNG, Orb, HoldAndSpin, FreeGames, PAYLINES, ALL_CELLS, pk, unpk, newSim, simulateChunk, simResult, LINES, wheelLayout };
+if (typeof module !== "undefined") module.exports = { REELS, ROWS, Engine, RNG, Orb, HoldAndSpin, FreeGames, PAYLINES, ALL_CELLS, pk, unpk, newSim, simulateChunk, simResult, LINES, wheelLayout };
 
 </script>
 <script>
@@ -1386,8 +1401,8 @@ class GameAudio {
 /* js/gfx.js */
 /* Procedural art + effects for the Canvas renderer (port of tnslots/gfx.py). */
 "use strict";
-const W = 1280, H = 720, CELL = 150, GAP = 8, PITCH = CELL + GAP;
-const GX = Math.floor((W - (5 * CELL + 4 * GAP)) / 2), GY = 138;
+const W = 720, H = 1140, CELL = 112, GAP = 4, PITCH = CELL + GAP, K = CELL / 150;     // portrait, phone-shaped
+const GX = Math.floor((W - (5 * CELL + 4 * GAP)) / 2), GY = 418, HERO_Y = 110, HERO_H = 254;
 const ORANGE = [255, 130, 0], ORANGE_HI = [255, 176, 60], ORANGE_DK = [190, 85, 0], WHITE = [255, 255, 255], GOLD = [255, 205, 60];
 const ORB_COLORS = {
   cash: [[255, 190, 60], [255, 110, 0], [140, 50, 0]], mini: [[140, 255, 150], [40, 190, 70], [10, 90, 30]],
@@ -1448,11 +1463,13 @@ function line(ctx, S, pts, color, lw) {
   ctx.strokeStyle = rgb(color); ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.stroke();
 }
 function drawLetter(ctx, S, ch, color) {
-  tile(ctx, S, [48, 32, 70], [20, 12, 36], lerpC(color, [0, 0, 0], 0.3));
-  ctx.font = `${S * 0.86}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  const y = S * 0.55;
-  ctx.fillStyle = "#000"; ctx.fillText(ch, S / 2 + S * 0.012, y + S * 0.025);
-  const g = ctx.createLinearGradient(0, S * 0.15, 0, S * 0.85); g.addColorStop(0, rgb(lerpC(color, WHITE, 0.55))); g.addColorStop(0.45, rgb(color)); g.addColorStop(1, rgb(lerpC(color, [0, 0, 0], 0.25)));
+  const size = ch.length > 1 ? S * 0.7 : S * 0.92;
+  ctx.font = `${size}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
+  const y = S * 0.53;
+  ctx.lineWidth = S * 0.1; ctx.strokeStyle = "rgba(10,4,24,0.95)"; ctx.strokeText(ch, S / 2, y + S * 0.02);
+  ctx.lineWidth = S * 0.055; ctx.strokeStyle = rgb(lerpC(color, WHITE, 0.85)); ctx.strokeText(ch, S / 2, y);
+  const g = ctx.createLinearGradient(0, S * 0.1, 0, S * 0.92);
+  g.addColorStop(0, rgb(lerpC(color, WHITE, 0.6))); g.addColorStop(0.42, rgb(color)); g.addColorStop(0.55, rgb(scaleC(color, 0.7))); g.addColorStop(1, rgb(scaleC(color, 0.45)));
   ctx.fillStyle = g; ctx.fillText(ch, S / 2, y);
 }
 function drawChecker(ctx, S) {
@@ -1463,7 +1480,6 @@ function drawChecker(ctx, S) {
   ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.beginPath(); ctx.moveTo(m, m); ctx.lineTo(S - m, m); ctx.lineTo(m, S - m); ctx.closePath(); ctx.fill();
 }
 function drawFootball(ctx, S) {
-  tile(ctx, S, [40, 36, 70], [18, 12, 34], [150, 90, 40]);
   ctx.save(); ctx.translate(S / 2, S / 2); ctx.rotate(-28 * Math.PI / 180);
   const w = S * 0.78, h = S * 0.46;
   ctx.fillStyle = "#5c3014"; ctx.beginPath(); ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2); ctx.fill();
@@ -1477,7 +1493,6 @@ function drawFootball(ctx, S) {
   ctx.restore();
 }
 function drawHelmet(ctx, S) {
-  tile(ctx, S, [50, 34, 84], [22, 14, 40], ORANGE);
   const shell = [[0.16, 0.56], [0.18, 0.36], [0.30, 0.22], [0.50, 0.15], [0.70, 0.21], [0.80, 0.35], [0.83, 0.5], [0.79, 0.6], [0.70, 0.64], [0.66, 0.78], [0.44, 0.80], [0.28, 0.72]];
   poly(ctx, S, shell.map(([x, y]) => [x + 0.012, y + 0.015]), [0, 0, 0]);
   poly(ctx, S, shell, ORANGE);
@@ -1492,7 +1507,6 @@ function drawHelmet(ctx, S) {
   poly(ctx, S, shell, null, [0, 0, 0], Math.max(2, S / 70));
 }
 function drawTrophy(ctx, S) {
-  tile(ctx, S, [56, 36, 90], [22, 12, 40], GOLD);
   ctx.strokeStyle = "#d29614"; ctx.lineWidth = Math.max(4, S / 28);
   for (const sd of [-1, 1]) { ctx.beginPath(); ctx.ellipse((0.5 + sd * 0.25) * S, 0.35 * S, 0.09 * S, 0.13 * S, 0, 0, Math.PI * 2); ctx.stroke(); }
   const cup = [[0.28, 0.17], [0.72, 0.17], [0.68, 0.46], [0.58, 0.6], [0.42, 0.6], [0.32, 0.46]];
@@ -1540,14 +1554,14 @@ function drawSmokeyHead(ctx, S, mouthOpen, bg) {
   ctx.fillStyle = "rgb(255,220,160)"; ctx.fillRect(cx - 0.07 * S, 0.73 * S, 0.14 * S, 0.04 * S); ctx.fillRect(cx - 0.02 * S, 0.73 * S, 0.04 * S, 0.14 * S);
 }
 function drawWild(ctx, S) {
-  tile(ctx, S, [120, 40, 0], [40, 8, 4], ORANGE_HI);
-  const bolt = [[0.58, 0.08], [0.28, 0.5], [0.46, 0.5], [0.38, 0.84], [0.74, 0.4], [0.54, 0.4], [0.68, 0.08]];
-  poly(ctx, S, bolt.map(([x, y]) => [x + 0.02, y + 0.02]), [255, 120, 0]);
-  poly(ctx, S, bolt, [255, 240, 120]);
-  poly(ctx, S, [[0.58, 0.1], [0.36, 0.44], [0.5, 0.44], [0.56, 0.2]], WHITE);
-  poly(ctx, S, bolt, null, ORANGE_DK, Math.max(2, S / 80));
-  ctx.font = `${S * 0.25}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.fillStyle = "#000"; ctx.fillText("WILD", S / 2 + S / 80, S * 0.86 + S / 80); ctx.fillStyle = "#fff"; ctx.fillText("WILD", S / 2, S * 0.86);
+  const c = S / 2, r = S * 0.42, g = ctx.createRadialGradient(c, c * 0.8, r * 0.1, c, c, r);
+  g.addColorStop(0, "rgb(255,190,60)"); g.addColorStop(0.6, "rgb(230,90,0)"); g.addColorStop(1, "rgb(120,30,0)");
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, r, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = rgb(GOLD); ctx.lineWidth = S * 0.045; ctx.stroke(); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = S * 0.012; ctx.beginPath(); ctx.arc(c, c, r - S * 0.035, 0, 6.283); ctx.stroke();
+  const bolt = [[0.58, 0.1], [0.3, 0.5], [0.47, 0.5], [0.4, 0.8], [0.72, 0.4], [0.54, 0.4], [0.66, 0.1]];
+  poly(ctx, S, bolt.map(([x, y]) => [x + 0.015, y + 0.015]), [120, 30, 0]);
+  poly(ctx, S, bolt, [255, 245, 150]); poly(ctx, S, [[0.58, 0.12], [0.38, 0.44], [0.5, 0.44], [0.56, 0.2]], WHITE);
+  ctx.font = `${S * 0.2}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round"; ctx.lineWidth = S * 0.05; ctx.strokeStyle = "#3a1000"; ctx.strokeText("WILD", c, S * 0.84); ctx.fillStyle = "#fff"; ctx.fillText("WILD", c, S * 0.84);
 }
 const T_PTS = [[0.10, 0.20], [0.90, 0.20], [0.90, 0.40], [0.60, 0.40], [0.60, 0.84], [0.40, 0.84], [0.40, 0.40], [0.10, 0.40]];
 function drawPowerT(ctx, S) {
@@ -1588,7 +1602,6 @@ function drawWheelDisc(ctx, cx, cy, R, layout, angle = 0, o = {}) {
   ctx.restore();
 }
 function drawWheelSymbol(ctx, S) {
-  tile(ctx, S, [40, 24, 76], [14, 8, 34], [255, 215, 110]);
   const layout = ["mini", "minor", "mini", "major", "mini", "minor", "mini", "grand"];
   drawWheelDisc(ctx, S / 2, S * 0.5, S * 0.36, layout, -0.2, { thin: true });
   ctx.strokeStyle = rgb(GOLD); ctx.lineWidth = S * 0.045; ctx.beginPath(); ctx.arc(S / 2, S * 0.5, S * 0.37, 0, 6.283); ctx.stroke();
@@ -1603,14 +1616,53 @@ function drawCheckerIcon(ctx, x, y, s) {
   ctx.strokeStyle = "rgba(20,8,0,0.9)"; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, s, s);
 }
 
+/* ------------------------------------------------------------- hero zone art */
+function seeded(seed) { let a = seed; return () => { a = (a * 16807) % 2147483647; return a / 2147483647; }; }
+/* Night game at Neyland: floodlight towers, crowd bokeh, the checkerboard end zone. */
+function drawStadium(ctx, w, h, acc) {
+  const r = seeded(99);
+  const sky = ctx.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, "rgb(6,6,26)"); sky.addColorStop(0.5, "rgb(34,20,72)"); sky.addColorStop(0.82, rgb(lerpC([60, 28, 40], acc, 0.45))); sky.addColorStop(1, "rgb(20,10,10)");
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+  // stands
+  ctx.fillStyle = "rgb(14,10,30)"; ctx.beginPath(); ctx.moveTo(0, h * 0.74); for (let x = 0; x <= w; x += 20) ctx.lineTo(x, h * (0.5 + 0.06 * Math.sin(x * 0.02) + 0.04 * r())); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath(); ctx.fill();
+  for (let i = 0; i < 520; i++) { const x = r() * w, y = h * (0.5 + 0.3 * r()), c = r(); ctx.fillStyle = c < 0.5 ? rgb(ORANGE, 0.35 + 0.5 * r()) : c < 0.8 ? "rgba(255,255,255,0.45)" : "rgba(255,220,120,0.5)"; ctx.fillRect(x, y, 1.6, 1.6); }
+  // light towers
+  for (const tx of [34, 150, 570, 686]) {
+    ctx.fillStyle = "rgb(30,24,50)"; ctx.fillRect(tx - 2, 28, 4, h * 0.6);
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { ctx.fillStyle = "rgb(255,248,210)"; ctx.fillRect(tx - 17 + j * 12, 4 + i * 9, 9, 6); }
+    addGlow(ctx, tx, 24, 70, [140, 130, 90], 0.9);
+  }
+  // end-zone checkerboard
+  const fy = h * 0.8;
+  for (let i = -3; i < 30; i++) for (let j = 0; j < 3; j++) if ((i + j) % 2 === 0) {
+    const y0 = fy + j * (h - fy) / 3, y1 = fy + (j + 1) * (h - fy) / 3, k0 = 0.5 + 0.5 * j, k1 = 0.5 + 0.5 * (j + 1), x0 = i * 28;
+    ctx.fillStyle = rgb(ORANGE, 0.55); ctx.beginPath(); ctx.moveTo(w / 2 + (x0 - w / 2) * k0, y0); ctx.lineTo(w / 2 + (x0 + 28 - w / 2) * k0, y0); ctx.lineTo(w / 2 + (x0 + 28 - w / 2) * k1, y1); ctx.lineTo(w / 2 + (x0 - w / 2) * k1, y1); ctx.closePath(); ctx.fill();
+  }
+  const v = ctx.createRadialGradient(w / 2, h / 2, h * 0.3, w / 2, h / 2, h * 1.1); v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,0.5)"); ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
+}
+/* Smokey, big: head + shoulders in an orange jersey with the Power T. */
+function drawSmokeyHero(ctx, S, mouthOpen) {
+  // torso
+  const jg = ctx.createLinearGradient(0, S * 0.6, 0, S); jg.addColorStop(0, "rgb(255,150,30)"); jg.addColorStop(1, "rgb(170,70,0)");
+  ctx.fillStyle = jg; ctx.beginPath(); ctx.moveTo(0, S); ctx.bezierCurveTo(0, S * 0.78, S * 0.14, S * 0.68, S * 0.34, S * 0.64); ctx.lineTo(S * 0.66, S * 0.64); ctx.bezierCurveTo(S * 0.86, S * 0.68, S, S * 0.78, S, S); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgb(110,45,0)"; ctx.lineWidth = S * 0.012; ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.beginPath(); ctx.moveTo(S * 0.36, S * 0.645); ctx.lineTo(S * 0.5, S * 0.76); ctx.lineTo(S * 0.64, S * 0.645); ctx.lineTo(S * 0.6, S * 0.64); ctx.lineTo(S * 0.5, S * 0.72); ctx.lineTo(S * 0.4, S * 0.64); ctx.closePath(); ctx.fill();
+  ctx.save(); ctx.translate(S * 0.5, S * 0.9); ctx.scale(0.3, 0.3); ctx.translate(-S * 0.5, -S * 0.5);
+  poly(ctx, S, T_PTS, WHITE, [120, 50, 0], S * 0.03); ctx.restore();
+  // head
+  const hd = mkCanvas(S, S), hx = hd.getContext("2d"); drawSmokeyHead(hx, S, mouthOpen, false);
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = S * 0.03; ctx.drawImage(hd, S * 0.02, -S * 0.02, S * 0.96, S * 0.96); ctx.restore();
+}
+function metalGradient(ctx, x, y, w, h) { const g = ctx.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, "rgb(255,236,160)"); g.addColorStop(0.3, "rgb(214,150,30)"); g.addColorStop(0.55, "rgb(255,220,120)"); g.addColorStop(0.8, "rgb(170,100,10)"); g.addColorStop(1, "rgb(255,214,110)"); return g; }
+
 class Art {
   constructor() {
     const R = 2, S = CELL * R, mk = (fn) => { const c = mkCanvas(S, S), x = c.getContext("2d"); fn(x, S); return c; };
     this.sym = {
-      J: mk((x, s) => drawLetter(x, s, "J", ORANGE)), Q: mk((x, s) => drawLetter(x, s, "Q", WHITE)),
-      K: mk((x, s) => drawLetter(x, s, "K", ORANGE_HI)), A: mk((x, s) => drawLetter(x, s, "A", [235, 235, 245])),
+      "10": mk((x, s) => drawLetter(x, s, "10", [235, 70, 80])), J: mk((x, s) => drawLetter(x, s, "J", [70, 140, 255])), Q: mk((x, s) => drawLetter(x, s, "Q", [255, 200, 60])),
+      K: mk((x, s) => drawLetter(x, s, "K", [255, 135, 20])), A: mk((x, s) => drawLetter(x, s, "A", [200, 100, 255])),
       CHECKER: mk(drawChecker), WHEEL: mk(drawWheelSymbol), FOOTBALL: mk(drawFootball), HELMET: mk(drawHelmet), TROPHY: mk(drawTrophy),
-      SMOKEY: mk((x, s) => drawSmokeyHead(x, s, false, true)), WILD: mk(drawWild), POWERT: mk(drawPowerT),
+      SMOKEY: mk((x, s) => { x.save(); x.translate(s * 0.04, -s * 0.02); x.scale(0.92, 0.92); drawSmokeyHead(x, s, false, false); x.restore(); }), WILD: mk(drawWild), POWERT: mk(drawPowerT),
     };
     this.orb = {}; for (const k of Object.keys(ORB_COLORS)) this.orb[k] = mk((x, s) => drawOrb(x, s, k));
     this.sym.ORB = this.orb.cash;
@@ -1622,12 +1674,17 @@ class Art {
       this.blur[n] = c;
     }
     this.empty = mk((x, s) => {
-      fillRR(x, 0, 0, s, s, s * 0.12, "rgba(14,10,26,0.92)", "rgb(90,56,20)", 4);
-      fillRR(x, s * 0.1, s * 0.1, s * 0.8, s * 0.8, s * 0.08, null, "rgb(30,22,50)", 2);
+      const g = x.createLinearGradient(0, 0, 0, s); g.addColorStop(0, "rgb(20,24,56)"); g.addColorStop(1, "rgb(8,10,28)");
+      fillRR(x, 0, 0, s, s, s * 0.06, g, "rgba(214,160,60,0.45)", 2);
     });
+    this.cellBg = this.empty;
     this.smokey = { idle: mkCanvas(520, 520), howl: mkCanvas(520, 520) };
     drawSmokeyHead(this.smokey.idle.getContext("2d"), 520, false, false);
     drawSmokeyHead(this.smokey.howl.getContext("2d"), 520, true, false);
+    this.hero = { idle: mkCanvas(600, 600), howl: mkCanvas(600, 600) };
+    drawSmokeyHero(this.hero.idle.getContext("2d"), 600, false); drawSmokeyHero(this.hero.howl.getContext("2d"), 600, true);
+    this.stadium = {};
+    for (const [name, acc] of Object.entries(THEME_ACC)) { const c = mkCanvas(W, HERO_H * 2 / 2), x = c.getContext("2d"); drawStadium(x, W, HERO_H, acc); this.stadium[name] = c; }
     this.powerTBig = mkCanvas(512, 512); const tx = this.powerTBig.getContext("2d"); poly(tx, 512, T_PTS, ORANGE);
     this.powerTOutline = mkCanvas(256, 256); const ox = this.powerTOutline.getContext("2d");
     poly(ox, 256, T_PTS, WHITE, ORANGE, 14);
@@ -1741,7 +1798,7 @@ class Admin {
     const bool = (label, path) => ({ label, path, kind: "bool" });
     const vec = (label, path, lo, hi, step, cols, note) => ({ label, path, kind: "vec", lo, hi, step, cols, note });
     const info = (text) => ({ kind: "info", text });
-    const weights = (mode) => [info("Relative weights per reel (higher = more frequent). Columns are reels 1-5. Wilds default to reels 2-4 only."),
+    const weights = (mode) => [info("Relative weights per reel (higher = more frequent). Columns are reels 1-5. Each pick fills a whole STACK of that symbol (see Symbol Stacks). Orbs, Power T and Wheel never stack."),
       ...SYMBOLS.map((s) => vec(s === "POWERT" ? "POWER T" : s === "ORB" ? "MONEY ORB" : s, "weights." + mode + "." + s, 0, 10000, 1, ["R1", "R2", "R3", "R4", "R5"])),
       info("Only the hit-rates page forces bonuses. These weights decide how often orbs / Power Ts / wilds show up as near-misses and line wins.")];
     this.pages = [
@@ -1768,8 +1825,11 @@ class Admin {
         { label: "Bonus it triggers", path: "collect.bonus", kind: "select", options: [["free_games", "Free Games (with Orb Pot + Wheel)"], ["orb_link", "Smokey's Orb Link"], ["random", "Random (50/50)"]] },
         int("Free games awarded by the meter", "collect.bonus_spins", 1, 999), bool("Carry extra checkerboards over after a bonus", "collect.carry_over"),
         info("Tip: how fast the meter fills depends on the CHECKER weight on the Reel Weights: Base page (about 1.5 checkerboards per spin by default).")]],
+      ["Symbol Stacks", [info("Reels are built from stacks of identical symbols. These weights set how tall each stack is (1 to 5 cells). Taller stacks mean bigger, rarer wins and more wild walls."),
+        vec("Stack height weights (1, 2, 3, 4, 5 cells)", "stacks.lengths", 0, 1000, 1, ["1", "2", "3", "4", "5"]),
+        info("Tip: change these, then run the Simulator. Hit frequency and RTP both move with stack height.")]],
       ["Reel Weights: Base", weights("base")], ["Reel Weights: Free", weights("free")],
-      ["Paytable", [info("Line pays are multiples of the LINE bet (total bet / 20). Columns: 3, 4, 5 of a kind."),
+      ["Paytable", [info("Line pays are multiples of the LINE bet (total bet / 40 paylines). Columns: 3, 4, 5 of a kind."),
         ...PAYING.slice().reverse().map((s) => vec(s, "paytable." + s, 0, 1e7, 5, ["3x", "4x", "5x"])), vec("Power T scatter (x TOTAL bet)", "scatter_pay", 0, 1e7, 1, ["3 T", "4 T", "5 T"])]],
       ["Orbs & Jackpots", [info("Orb values are multiples of the TOTAL bet, so every denomination and power level scales automatically."),
         vec("Cash orb value ladder (x total bet)", "orbs.value_ladder", 0, 1e6, 0.5), vec("Cash orb value weights", "orbs.value_weights", 0, 1e6, 1),
@@ -1792,7 +1852,7 @@ class Admin {
         vec("Wheel segments (Mini, Minor, Major, Grand)", "wheel.segments", 0, 12, 1, ["MINI", "MINOR", "MAJOR", "GRAND"], (w) => { const c = w.wheel.segments, t = c.reduce((a, b) => a + b, 0) || 1; return `${t} segments. Chance per spin: ` + ["Mini", "Minor", "Major", "Grand"].map((k, i) => `${k} ${(100 * c[i] / t).toFixed(1)}%`).join("  "); }),
         vec("Wheel spins for 3 / 4 / 5 WHEEL symbols", "wheel.spins_for_count", 1, 9, 1, ["3", "4", "5"]), bool("Free-game multiplier also boosts wheel wins", "wheel.apply_free_multiplier"),
         info("How often it triggers is set on the Bonus Hit Rates page (Jackpot Wheel per free spin). The WHEEL symbol's weights are on Reel Weights: Free.")]],
-      ["Bets & Denoms", [info("Total bet = denomination x power-level credits. Every prize is a multiple of the bet, so wins scale with both."),
+      ["Bets & Denoms", [info("Total bet = denomination x power-level credits, spread over 40 paylines. Every prize is a multiple of the bet, so wins scale with both."),
         vec("Denominations ($)", "bet.denominations", 0.01, 1000, 0.01), vec("Power levels (credits per spin)", "bet.power_levels", 1, 1e6, 5)]],
       ["Simulator", "sim"], ["Tools & Stats", "tools"],
     ];
@@ -1921,7 +1981,7 @@ class Admin {
 const TIERS = [[500, "LEGENDARY WIN", [255, 80, 60]], [150, "EPIC WIN", [255, 60, 200]], [50, "MEGA WIN", [255, 200, 40]], [15, "BIG WIN", ORANGE], [5, "NICE WIN", [255, 170, 80]]];
 const FILLER = ["J", "Q", "K", "A", "CHECKER", "FOOTBALL", "HELMET", "TROPHY", "SMOKEY", "WILD", "POWERT", "ORB", "J", "Q", "K", "A"];
 const FILLER_FREE = FILLER.concat(["WHEEL", "WHEEL", "WHEEL"]);
-const POT_POS = [120, 207];                     // where meter / pot flights land (left card)
+const POT_POS = [W / 2, 385];                   // where meter / pot flights land (status bar)
 const rint = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 
 function money(cents, short = false) {
@@ -1936,43 +1996,44 @@ function money(cents, short = false) {
 
 class Reel {
   constructor(idx) {
-    this.idx = idx; this.x = GX + idx * PITCH; this.L = 40;
+    this.idx = idx; this.x = GX + idx * PITCH; this.L = 48;
     this.strip = Array.from({ length: this.L }, () => FILLER[rint(0, FILLER.length - 1)]);
-    this.pos = rint(0, this.L - 1); this.state = "idle"; this.speed = 24; this.orbAt = {}; this.t = 0; this.dur = 0.7; this.p0 = this.p1 = 0; this.anticipate = false;
+    this.pos = rint(0, this.L - 1); this.state = "idle"; this.speed = 26; this.orbAt = {}; this.t = 0; this.dur = 0.7; this.p0 = this.p1 = 0; this.anticipate = false;
   }
+  idx_(j) { return ((j % this.L) + this.L) % this.L; }
   setIdle(syms, orbs) {
     const P = Math.floor(this.pos); this.orbAt = {};
-    for (let r = 0; r < 3; r++) { const j = (((P - r) % this.L) + this.L) % this.L; this.strip[j] = syms[r]; if (orbs && orbs[r]) this.orbAt[j] = orbs[r]; }
+    for (let r = 0; r < ROWS; r++) { const j = this.idx_(P - r); this.strip[j] = syms[r]; if (orbs && orbs[r]) this.orbAt[j] = orbs[r]; }
     this.pos = P;
   }
   start(speed, free = false) {
     this.state = "spinning"; this.speed = speed;
     const P = Math.floor(this.pos), keep = new Set(), pool = free ? FILLER_FREE : FILLER;
-    for (let k = 0; k < 4; k++) keep.add((((P + 1 - k) % this.L) + this.L) % this.L);
+    for (let k = 0; k < ROWS + 1; k++) keep.add(this.idx_(P + 1 - k));
     for (let j = 0; j < this.L; j++) if (!keep.has(j)) this.strip[j] = pool[rint(0, pool.length - 1)];
     this.orbAt = {}; this.anticipate = false;
   }
-  requestStop(syms, orbs, turbo) {
-    const P = Math.ceil(this.pos) + 5; this.orbAt = {};
-    for (let r = 0; r < 3; r++) { const j = (((P - r) % this.L) + this.L) % this.L; this.strip[j] = syms[r]; if (orbs[r]) this.orbAt[j] = orbs[r]; }
-    this.p0 = this.pos; this.p1 = P; this.dur = turbo ? 0.42 : 0.72; this.t = 0; this.state = "stopping";
+  requestStop(syms, orbs, turbo, quick = false) {
+    const P = Math.ceil(this.pos) + ROWS + 3; this.orbAt = {};
+    for (let r = 0; r < ROWS; r++) { const j = this.idx_(P - r); this.strip[j] = syms[r]; if (orbs[r]) this.orbAt[j] = orbs[r]; }
+    this.p0 = this.pos; this.p1 = P; this.dur = quick ? 0.22 : turbo ? 0.36 : 0.62; this.t = 0; this.state = "stopping";
   }
   update(dt) {
     if (this.state === "spinning") this.pos += this.speed * dt;
     else if (this.state === "stopping") {
       this.t += dt; const u = Math.min(1, this.t / this.dur);
-      this.pos = this.p0 + (this.p1 - this.p0) * easeOutBack(u, 1.15);
-      if (u >= 1) { this.pos = ((this.p1 % this.L) + this.L) % this.L; this.state = "idle"; this.anticipate = false; return true; }
+      this.pos = this.p0 + (this.p1 - this.p0) * easeOutBack(u, 1.0);
+      if (u >= 1) { this.pos = this.idx_(this.p1); this.state = "idle"; this.anticipate = false; return true; }
     }
     return false;
   }
   moving() { return this.state === "spinning" || (this.state === "stopping" && this.t < this.dur * 0.55); }
   draw(ctx, game) {
-    ctx.save(); ctx.beginPath(); ctx.rect(this.x, GY, CELL, 3 * PITCH - GAP); ctx.clip();
+    ctx.save(); ctx.beginPath(); ctx.rect(this.x - 1, GY, CELL + 2, ROWS * PITCH - GAP); ctx.clip();
     const P = Math.floor(this.pos), frac = this.pos - P, blur = this.moving();
-    for (let off = 0; off < 4; off++) {
-      const j = P + 1 - off, jj = ((j % this.L) + this.L) % this.L, y = GY + (off - 1 + frac) * PITCH, sym = this.strip[jj];
-      if (sym === "ORB" && !blur) game.drawOrb(ctx, this.orbAt[jj] || null, this.x + CELL / 2, y + CELL / 2, { slotAt: [this.x, y] });
+    for (let off = 0; off <= ROWS; off++) {
+      const j = P + 1 - off, jj = this.idx_(j), y = GY + (off - 1 + frac) * PITCH, sym = this.strip[jj];
+      if (sym === "ORB" && !blur) game.drawOrb(ctx, this.orbAt[jj] || null, this.x + CELL / 2, y + CELL / 2);
       else ctx.drawImage(blur ? game.art.blur[sym] : game.art.sym[sym], this.x, Math.round(y), CELL, CELL);
     }
     ctx.restore();
@@ -1980,35 +2041,33 @@ class Reel {
 }
 
 class Banner {
-  constructor(title, sub = "", color = ORANGE, life = 2.4, size = 84, y = 300) { this.title = title; this.sub = sub; this.color = color; this.life = this.max = life; this.size = size; this.y = y; }
+  constructor(title, sub = "", color = ORANGE, life = 2.4, size = 84, y = GY + 288) { this.title = title; this.sub = sub; this.color = color; this.life = this.max = life; this.size = size; this.y = y; }
   draw(ctx, t) {
     const age = this.max - this.life, a = Math.max(0, Math.min(Math.min(1, age / 0.25), Math.min(1, this.life / 0.4)));
     const sc = easeOutBack(Math.min(1, age / 0.35), 1.7) * (1 + 0.015 * Math.sin(t * 9));
-    ctx.fillStyle = `rgba(0,0,0,${0.65 * a})`; ctx.fillRect(0, this.y - this.size * 0.95, W, this.size * 1.9);
-    addGlow(ctx, W / 2, this.y, this.size * 5 * a, scaleC(this.color, 0.35));
-    drawText(ctx, this.title, this.size, W / 2, this.y - (this.sub ? 14 : 0), { color: this.color, ow: 5, outline: [40, 10, 0], alpha: a, scale: Math.max(0.01, sc) });
-    if (this.sub) drawText(ctx, this.sub, this.size * 0.42, W / 2, this.y + this.size * 0.6, { ow: 3, alpha: a });
+    ctx.save(); ctx.font = `${this.size}px ${FONT}`; const fit = Math.min(1, 680 / Math.max(1, ctx.measureText(this.title).width)), size = this.size * fit;
+    ctx.font = `${size * 0.42}px ${FONT}`; const subFit = this.sub ? Math.min(1, 680 / Math.max(1, ctx.measureText(this.sub).width)) : 1; ctx.restore();
+    ctx.fillStyle = `rgba(0,0,10,${0.7 * a})`; ctx.fillRect(0, this.y - size * 0.95, W, size * 1.9);
+    addGlow(ctx, W / 2, this.y, size * 4 * a, scaleC(this.color, 0.35));
+    drawText(ctx, this.title, size, W / 2, this.y - (this.sub ? size * 0.16 : 0), { color: this.color, ow: Math.max(3, size * 0.06), outline: [40, 10, 0], alpha: a, scale: Math.max(0.01, sc) });
+    if (this.sub) drawText(ctx, this.sub, size * 0.42 * subFit, W / 2, this.y + size * 0.6, { ow: 3, alpha: a });
   }
 }
 
+/* Smokey stands in the hero zone the whole time; he howls and fires bolts when a feature calls for it. */
 class SmokeyActor {
-  constructor(art) { this.art = art; this.active = false; this.t = 0; this.x = -300; this.targetX = 118; this.y = 420; this.howling = 0; this.rings = []; }
-  enter() { this.active = true; }
-  update(dt, present) {
-    this.t += dt; this.x += ((present ? this.targetX : -320) - this.x) * Math.min(1, dt * 7);
-    this.howling = Math.max(0, this.howling - dt);
-    this.rings.forEach((r) => (r[2] += dt)); this.rings = this.rings.filter((r) => r[2] < 1);
-    if (!present && this.x < -280) this.active = false;
-  }
+  constructor() { this.active = true; this.t = 0; this.howling = 0; this.rings = []; this.excite = 0; this.x = 140; this.y = 270; }
+  enter() {}
+  mouth() { return [150, HERO_Y + 130]; }
+  update(dt, present) { this.t += dt; this.excite += ((present ? 1 : 0) - this.excite) * Math.min(1, dt * 6); this.howling = Math.max(0, this.howling - dt); this.rings.forEach((r) => (r[2] += dt)); this.rings = this.rings.filter((r) => r[2] < 1); }
   howl(s = 1.8) { this.howling = s; }
-  ring() { this.rings.push([this.x + 60, this.y - 80, 0]); }
-  draw(ctx, idle = false) {
-    if (!this.active && !idle) return;
-    const x = idle ? 118 : this.x, y = (idle ? 410 : this.y) + Math.sin(this.t * 2.2) * 4, howl = this.howling > 0;
-    addGlow(ctx, x, y, 190, [60, 40, 10], 0.8);
-    ctx.save(); ctx.translate(x, y); if (howl) ctx.rotate(-(14 + Math.sin(this.t * 14) * 2) * Math.PI / 180);
-    const sc = howl ? 1.06 : 1; ctx.drawImage(howl ? this.art.smokey.howl : this.art.smokey.idle, -130 * sc, -130 * sc, 260 * sc, 260 * sc); ctx.restore();
-    for (const [rx, ry, age] of this.rings) { ctx.strokeStyle = rgb([255, 160, 40], 1 - age); ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(rx + age * 60, ry - age * 50, 30 + age * 260, 0, 6.283); ctx.stroke(); }
+  ring() { const [mx, my] = this.mouth(); this.rings.push([mx, my, 0]); }
+  draw(ctx, art) {
+    const howl = this.howling > 0, breath = 1 + Math.sin(this.t * 1.8) * 0.006 + this.excite * 0.03, S = 268;
+    addGlow(ctx, 150, HERO_Y + 110, 180 + 30 * this.excite, [70 + 60 * this.excite, 40 + 30 * this.excite, 10], 0.9);
+    ctx.save(); ctx.translate(150, HERO_Y + 134); ctx.rotate(howl ? -(0.04 + Math.sin(this.t * 14) * 0.01) : Math.sin(this.t * 1.1) * 0.012); if (howl) ctx.translate(0, 8);
+    ctx.drawImage(howl ? art.hero.howl : art.hero.idle, -S / 2 * breath, -S / 2 * breath, S * breath, S * breath); ctx.restore();
+    for (const [rx, ry, age] of this.rings) { ctx.strokeStyle = rgb([255, 160, 40], 1 - age); ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(rx + age * 40, ry - age * 40, 20 + age * 190, 0, 6.283); ctx.stroke(); }
   }
 }
 
@@ -2018,7 +2077,7 @@ class Game {
     this.cfg = loadConfig(); this.engine = new Engine(this.cfg, new RNG());
     this.art = new Art(); this.reels = Array.from({ length: 5 }, (_, i) => new Reel(i));
     this.particles = new Particles(); this.bolts = []; this.banners = []; this.toasts = [];
-    this.smokey = new SmokeyActor(this.art); this.smokeyPresent = false;
+    this.smokey = new SmokeyActor(); this.smokeyPresent = false;
     this.audio = new GameAudio(this.cfg.general.music_volume, this.cfg.general.sfx_volume);
     this.embers = new Embers(); this.flashes = [];
     this.t = 0; this.dt = 0.016; this.state = "title"; this.flow = null; this.skip = false; this.timers = [];
@@ -2026,7 +2085,7 @@ class Game {
     this.forceNext = null; this.helpOpen = false; this.quitArmed = 0; this.mouse = [0, 0];
     this.balance = 0; this.winDisp = 0;
     const z = () => ({ spins: 0, wagered: 0, won: 0, biggest: 0, orb_bonuses: 0, free_games: 0, jackpots: 0, meter_bonuses: 0, wheel_spins: 0 });
-    this.stats = z(); this.session = z(); this.meter = 0; this.meterDisp = 0; this.fliers = []; this.potDisp = 0; this.potCountDisp = 0; this.wheel = null;
+    this.stats = z(); this.session = z(); this.best = []; this.bestFlash = -1; this.winLabel = ""; this.spinPress = null; this.meter = 0; this.meterDisp = 0; this.fliers = []; this.potDisp = 0; this.potCountDisp = 0; this.wheel = null;
     this.loadBets(); this.loadSave();
     this.spinBet = this.betCredits; this.spinLevel = this.levelIdx; this.spinDenom = this.denomCents;
     this.ctxInfo = { grid: null, orbCount: 0, tCount: 0 };
@@ -2055,10 +2114,11 @@ class Game {
         if (Number.isInteger(d.level)) this.levelIdx = Math.max(0, Math.min(this.levels.length - 1, d.level));
         for (const k of Object.keys(this.stats)) if (d.stats && typeof d.stats[k] === "number") this.stats[k] = d.stats[k];
         if (Number.isFinite(d.meter) && d.meter >= 0) this.meter = Math.floor(d.meter);
+        if (Array.isArray(d.best)) this.best = d.best.filter((v) => Number.isFinite(v)).slice(0, 5);
       }
     } catch (e) {}
   }
-  saveState() { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ balance: this.balance, denom: this.denomCents, level: this.levelIdx, stats: this.stats, meter: this.meter })); } catch (e) {} }
+  saveState() { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ balance: this.balance, denom: this.denomCents, level: this.levelIdx, stats: this.stats, meter: this.meter, best: this.best })); } catch (e) {} }
   applyConfig(cfg) {
     this.cfg = cfg; this.engine = new Engine(cfg, new RNG());
     const old = this.denomCents; this.loadBets();
@@ -2071,7 +2131,7 @@ class Game {
   resetStats() { for (const d of [this.stats, this.session]) for (const k of Object.keys(d)) d[k] = 0; this.saveState(); }
   initIdleGrid() {
     const g = this.engine.naturalGrid("base");
-    this.reels.forEach((r, i) => { const o = {}; for (let k = 0; k < 3; k++) if (g[i][k] === "ORB") o[k] = this.engine.newOrb(); r.setIdle(g[i], o); });
+    this.reels.forEach((r, i) => { const o = {}; for (let k = 0; k < ROWS; k++) if (g[i][k] === "ORB") o[k] = this.engine.newOrb(); r.setIdle(g[i], o); });
   }
   makeBackgrounds() {
     this.bgs = {};
@@ -2079,9 +2139,9 @@ class Game {
     for (const [name, [top, bot, acc]] of Object.entries(themes)) {
       const c = mkCanvas(W, H), x = c.getContext("2d"), g = x.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, rgb(top)); g.addColorStop(1, rgb(bot)); x.fillStyle = g; x.fillRect(0, 0, W, H);
-      x.globalAlpha = 0.09; x.drawImage(this.art.powerTBig, W / 2 - 310, 70, 620, 620); x.globalAlpha = 1;
+      x.globalAlpha = 0.07; x.drawImage(this.art.powerTBig, W / 2 - 300, H / 2 - 250, 600, 600); x.globalAlpha = 1;
       for (let i = -6; i < 24; i++) for (let j = 0; j < 4; j++) if ((i + j) % 2 === 0) {
-        const y0 = H - 150 + j * 30, sk = (3 - j) * 20 + 40; x.fillStyle = rgb(acc, (14 + j * 5) / 255);
+        const y0 = H - 110 + j * 24, sk = (3 - j) * 20 + 40; x.fillStyle = rgb(acc, (14 + j * 5) / 255);
         x.beginPath(); x.moveTo(i * 80 - sk, y0 + 30); x.lineTo(i * 80 + 80 - sk, y0 + 30); x.lineTo(i * 80 + 80 - sk * 0.8, y0); x.lineTo(i * 80 - sk * 0.8, y0); x.closePath(); x.fill();
       }
       const v = x.createRadialGradient(W / 2, H / 2, H * 0.45, W / 2, H / 2, H * 1.05); v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,0.55)");
@@ -2090,7 +2150,7 @@ class Game {
     }
   }
   resize() {
-    const dpr = window.devicePixelRatio || 1, cssW = Math.min(window.innerWidth, window.innerHeight * 16 / 9);
+    const dpr = window.devicePixelRatio || 1, cssW = Math.min(window.innerWidth, window.innerHeight * W / H);
     const k = Math.max(1, Math.min(2, cssW * dpr / W));
     this.canvas.width = Math.round(W * k); this.canvas.height = Math.round(H * k); this.k = k;
   }
@@ -2116,7 +2176,11 @@ class Game {
   *sleep(secs, skippable = false) { let t = 0; while (t < secs) { if (skippable && this.consumeSkip()) return; yield; t += this.dt; } }
   *until(fn) { while (!fn()) yield; }
   pay(credits) { const c = Math.floor(credits) * this.spinDenom; this.balance += c; for (const d of [this.stats, this.session]) d.won += c; }
-  noteRoundWin(credits) { const c = Math.floor(credits) * this.spinDenom; for (const d of [this.stats, this.session]) d.biggest = Math.max(d.biggest, c); }
+  noteRoundWin(credits) {
+    const c = Math.floor(credits) * this.spinDenom; for (const d of [this.stats, this.session]) d.biggest = Math.max(d.biggest, c);
+    if (c > 0 && (this.best.length < 5 || c > this.best[this.best.length - 1])) { this.best.push(c); this.best.sort((a, b) => b - a); this.best = this.best.slice(0, 5); this.bestFlash = this.best.indexOf(c); setTimeout(() => { this.bestFlash = -1; }, 4000); }
+  }
+  xpInfo() { const w = this.stats.wagered / 100, level = 1 + Math.floor(Math.sqrt(w / 20)), lo = 20 * (level - 1) ** 2, hi = 20 * level * level; return { level, frac: (w - lo) / (hi - lo) }; }
   orbCents(orb) { return this.engine.orbCredits(orb, this.spinBet, this.spinLevel) * this.spinDenom; }
   bump(k) { this.stats[k]++; this.session[k]++; }
   /* --------------------------------------------------------------------- spin */
@@ -2140,27 +2204,28 @@ class Game {
     if (res.trigger === "power_t") roundTotal += yield* this.flowFreeGames(res);
     else if (res.trigger === "orb") roundTotal += yield* this.flowOrbLink(res.orbs, false);
     roundTotal += yield* this.flowMeterBonus();
-    this.noteRoundWin(roundTotal); this.saveState(); this.state = "idle"; this.autoTimer = 0;
+    this.lastWinCents = roundTotal * this.spinDenom; this.noteRoundWin(roundTotal); this.saveState(); this.state = "idle"; this.autoTimer = 0;
   }
   *reelSpin(grid, orbs) {
-    const turbo = this.cfg.general.turbo_spin, speed = turbo ? 34 : 24;
+    const turbo = this.cfg.general.turbo_spin, speed = turbo ? 40 : 30;
     this.ctxInfo = { grid, orbs, orbCount: 0, tCount: 0 };
     const freeMode = !!this.fgInfo;
-    for (const r of this.reels) { r.start(speed, freeMode); yield* this.sleep(turbo ? 0.01 : 0.04); }
+    for (const r of this.reels) { r.start(speed, freeMode); yield* this.sleep(turbo ? 0.01 : 0.035); }
     this.audio.spinLoop(true);
-    yield* this.sleep(turbo ? 0.15 : 0.5);
-    const gap = turbo ? 0.11 : 0.32; let oSeen = 0, tSeen = 0, wSeen = 0;
+    let quick = false; for (let t = 0; t < (turbo ? 0.1 : 0.4) && !quick; t += this.dt) { quick = this.consumeSkip(); yield; }
+    const gap = turbo ? 0.07 : 0.2; let oSeen = 0, tSeen = 0, wSeen = 0;
     for (let i = 0; i < 5; i++) {
       const remaining = 5 - i, needO = 6 - oSeen;
       if ((oSeen >= 3 && needO > 0 && needO <= remaining) || (tSeen === 2 && remaining >= 1) || (freeMode && wSeen === 2 && remaining >= 1)) {
         for (let k = i; k < 5; k++) this.reels[k].anticipate = true;
-        this.sfx("thunder", 0.35); yield* this.sleep(turbo ? 0.5 : 1.2);
+        this.sfx("thunder", 0.35); if (!quick) yield* this.sleep(turbo ? 0.5 : 1.1, true);
       }
       const col = grid[i], omap = {};
-      for (let r = 0; r < 3; r++) if (orbs[pk([i, r])]) omap[r] = orbs[pk([i, r])];
-      this.reels[i].requestStop(col, omap, turbo); this.reels[i].anticipate = false;
+      for (let r = 0; r < ROWS; r++) if (orbs[pk([i, r])]) omap[r] = orbs[pk([i, r])];
+      if (!quick && this.consumeSkip()) quick = true;
+      this.reels[i].requestStop(col, omap, turbo, quick); this.reels[i].anticipate = false;
       oSeen += Object.keys(omap).length; tSeen += col.filter((s) => s === "POWERT").length; wSeen += col.filter((s) => s === "WHEEL").length;
-      yield* this.sleep(gap);
+      if (!quick) { for (let t = 0; t < gap && !quick; t += this.dt) { quick = this.consumeSkip(); yield; } }
     }
     yield* this.until(() => this.reels.every((r) => r.state === "idle"));
     this.audio.spinLoop(false);
@@ -2168,7 +2233,7 @@ class Game {
   onLand(i) {
     this.sfx("stop" + i, 0.9, (i - 2) * 0.25);
     const grid = this.ctxInfo.grid; if (!grid) return;
-    for (let r = 0; r < 3; r++) {
+    for (let r = 0; r < ROWS; r++) {
       const s = grid[i][r], [cx, cy] = cellCenter(i, r);
       if (s === "ORB") {
         const k = this.ctxInfo.orbCount++; this.later(0.03 + 0.05 * r, () => this.sfx("orb" + Math.min(k, 14)));
@@ -2211,7 +2276,7 @@ class Game {
   *collectCheckers(grid) {
     const col = this.cfg.collect;
     if (!col.enabled || this.fgInfo) return;
-    const cells = []; for (let c = 0; c < 5; c++) for (let r = 0; r < 3; r++) if (grid[c][r] === "CHECKER") cells.push([c, r]);
+    const cells = []; for (let c = 0; c < 5; c++) for (let r = 0; r < ROWS; r++) if (grid[c][r] === "CHECKER") cells.push([c, r]);
     if (!cells.length) return;
     this.meter += cells.length; let n = 0;
     cells.forEach((p, i) => {
@@ -2232,7 +2297,7 @@ class Game {
       this.sfx("trigger"); this.flash = 0.7; this.shakeScreen(12);
       for (let i = 0; i < 4; i++) this.randomBolt([255, 190, 80]);
       this.banner("END ZONE BONUS!", `${col.target} CHECKERBOARDS COLLECTED`, [255, 170, 60], 3.2, 88);
-      for (let i = 0; i < 8; i++) { this.particles.burst(rint(250, 1030), rint(200, 560), 18, i % 2 ? WHITE : ORANGE, 280, 0.9, 4, 150); }
+      for (let i = 0; i < 8; i++) { this.particles.burst(rint(GX, GX + 576), rint(GY, GY + 560), 18, i % 2 ? WHITE : ORANGE, 280, 0.9, 4, 150); }
       yield* this.sleep(0.8);
       while (this.meterDisp > this.meter) { this.meterDisp = Math.max(this.meter, this.meterDisp - Math.max(2, col.target / 60)); yield; }
       this.meterDisp = this.meter; yield* this.sleep(2.2);
@@ -2271,7 +2336,7 @@ class Game {
     const W_ = this.wheel = { layout: spin.layout, angle: 0, scale: 0, hl: -1, kind: null, flick: 0, bulbs: 0 };
     this.bump("wheel_spins");
     this.sfx("trigger", 0.8); this.flash = 0.5; this.hlCells = new Set();
-    this.banner("JACKPOT WHEEL", "JACKPOTS ONLY  -  MINI  MINOR  MAJOR  GRAND", [255, 215, 110], 2.4, 84, 120);
+    this.banner("JACKPOT WHEEL", "JACKPOTS ONLY  -  MINI  MINOR  MAJOR  GRAND", [255, 215, 110], 2.4, 70, 200);
     for (let t = 0; t < 0.5; t += this.dt) { W_.scale = easeOutBack(Math.min(1, t / 0.5), 1.4); yield; }
     W_.scale = 1; yield* this.sleep(1.2);
     const turns = 5 + rint(0, 2), final = turns * Math.PI * 2 - spin.index * seg + (Math.random() * 0.7 - 0.35) * seg, dur = 6.0;
@@ -2287,7 +2352,7 @@ class Game {
     const col = ORB_COLORS[spin.kind][1];
     this.sfx(spin.kind === "grand" || spin.kind === "major" ? "fanfare3" : "fanfare2"); this.sfx("thunder", 0.5);
     this.flash = 0.8; this.shakeScreen(spin.kind === "grand" ? 18 : 10); for (let i = 0; i < 5; i++) this.randomBolt(scaleC(col, 1.1));
-    this.banner(spin.kind.toUpperCase() + " JACKPOT!", money(credits * this.spinDenom), col, 3.6, 96, 130);
+    this.banner(spin.kind.toUpperCase() + " JACKPOT!", money(credits * this.spinDenom), col, 3.6, 84, 220);
     this.particles.coins(W / 2, 640, 70, 1000); this.bump("jackpots");
     this.pay(credits); fg.addWin(credits); this.winDisp = fg.totalCredits;
     yield* this.sleep(4.0, true);
@@ -2378,9 +2443,9 @@ class Game {
     const title = { howl: "SMOKEY HOWLS!", fetch: "SMOKEY FETCHES!", super: "SUPER HOWL!" }[ev.action];
     const sub = { howl: "ORBS GET POWERED UP", fetch: "NEW ORBS FOR THE BOARD", super: "EVERY ORB LEVELS UP" }[ev.action];
     yield* this.sleep(0.55); s.howl(2.2); this.sfx("howl"); s.ring();
-    this.banner(title, sub, [255, 190, 80], 2.4, 70, 170);
+    this.banner(title, sub, [255, 190, 80], 2.4, 56, 250);
     yield* this.sleep(0.5); s.ring(); yield* this.sleep(0.5);
-    const mouth = [s.x + 40, s.y - 60];
+    const mouth = s.mouth();
     if (ev.action === "fetch") {
       for (const [p, orb] of ev.newOrbs) {
         const key = pk(p); this.hold[key] = { orb: orb.copy(), born: this.t, flash: 0.8 };
@@ -2434,7 +2499,7 @@ class Game {
         this.banner(`+${r.freeSpinsAwarded} FREE GAMES`, "POWER T RETRIGGER!", [255, 220, 100], 2.6, 76);
         totalSpins += r.freeSpinsAwarded; this.flash = 0.5; this.shakeScreen(10); this.fgInfo.total = totalSpins; yield* this.sleep(2.2); this.hlCells = new Set();
       } else if (r.trigger === "wheel") {
-        this.hlCells = new Set(); for (let c = 0; c < 5; c++) for (let rr = 0; rr < 3; rr++) if (r.grid[c][rr] === "WHEEL") this.hlCells.add(pk([c, rr]));
+        this.hlCells = new Set(); for (let c = 0; c < 5; c++) for (let rr = 0; rr < ROWS; rr++) if (r.grid[c][rr] === "WHEEL") this.hlCells.add(pk([c, rr]));
         this.sfx("trigger", 0.7); this.flash = 0.5; this.shakeScreen(10); yield* this.sleep(1.4);
         this.hlCells = new Set();
         for (let k = 0; k < r.wheelSpins; k++) yield* this.flowWheel(fg);
@@ -2456,8 +2521,8 @@ class Game {
   *dropSticky(positions) {
     const s = this.smokey; s.enter(); this.smokeyPresent = true; this.sfx("bark"); yield* this.sleep(0.5);
     s.howl(1.6); this.sfx("howl", 0.8); s.ring();
-    this.banner("SMOKEY'S WILDS!", "STICKY WILDS FOR THE REST OF THE ROUND", [255, 200, 80], 2.0, 62, 170); yield* this.sleep(0.6);
-    const mouth = [s.x + 40, s.y - 60];
+    this.banner("SMOKEY'S WILDS!", "STICKY WILDS FOR THE REST OF THE ROUND", [255, 200, 80], 2.0, 50, 250); yield* this.sleep(0.6);
+    const mouth = s.mouth();
     for (const p of positions) {
       this.bolts.push(new Bolt(mouth, cellCenter(p[0], p[1]), 0.4, [255, 190, 80], 6)); this.sfx("zap");
       this.sticky.add(pk(p)); this.stickyBorn[pk(p)] = this.t; const [cx, cy] = cellCenter(p[0], p[1]);
@@ -2465,7 +2530,7 @@ class Game {
     }
     yield* this.sleep(0.4); this.smokeyPresent = false; yield* this.sleep(0.3);
   }
-  randomBolt(color = [150, 210, 255]) { this.bolts.push(new Bolt([rint(100, 1180), 0], [rint(100, 1180), rint(300, 640)], 0.5, color, 6)); this.sfx("zap", 0.4); }
+  randomBolt(color = [150, 210, 255]) { this.bolts.push(new Bolt([rint(60, 660), 0], [rint(80, 640), rint(400, 980)], 0.5, color, 6)); this.sfx("zap", 0.4); }
   boltAt(p) { const c = cellCenter(p[0], p[1]); this.bolts.push(new Bolt([c[0] + rint(-80, 80), 0], c, 0.4, [255, 190, 80], 5)); }
   /* ------------------------------------------------------------------- update */
   update(dt) {
@@ -2479,6 +2544,7 @@ class Game {
     this.banners.forEach((b) => (b.life -= dt)); this.banners = this.banners.filter((b) => b.life > 0);
     this.toasts.forEach((t) => (t[1] -= dt)); this.toasts = this.toasts.filter((t) => t[1] > 0);
     this.smokey.update(dt, this.smokeyPresent);
+    if (this.spinPress && !this.spinPress.fired && performance.now() - this.spinPress.t > 600) { this.spinPress.fired = true; if (this.state === "idle" || this.auto) this.toggleAuto(); else this.onSpinButton(); }
     for (const f of this.fliers) { f.t += dt; if (f.t >= f.dur && !f.fired) { f.fired = true; f.done && f.done(); } }
     this.fliers = this.fliers.filter((f) => f.t < f.dur);
     if (this.wheel) { this.wheel.flick = Math.max(0, this.wheel.flick - dt * 6); this.wheel.bulbs += dt; }
@@ -2500,12 +2566,13 @@ class Game {
   buildButtons() {
     const idle = () => this.state === "idle", on = () => true;
     this.buttons = [
-      { r: [228, 664, 26, 36], label: "<", fn: () => this.changeDenom(-1), kind: "arrow", en: idle }, { r: [372, 664, 26, 36], label: ">", fn: () => this.changeDenom(1), kind: "arrow", en: idle },
-      { r: [414, 664, 26, 36], label: "<", fn: () => this.changeLevel(-1), kind: "arrow", en: idle }, { r: [552, 664, 26, 36], label: ">", fn: () => this.changeLevel(1), kind: "arrow", en: idle },
-      { r: [582, 622, 116, 98], label: "SPIN", fn: () => this.onSpinButton(), kind: "spin", en: on },
-      { r: [1088, 636, 78, 30], label: "AUTO", fn: () => this.toggleAuto(), kind: "small", en: on }, { r: [1174, 636, 86, 30], label: "MAX BET", fn: () => this.maxBet(), kind: "small", en: idle },
-      { r: [1088, 676, 78, 30], label: "MUSIC", fn: () => this.toggleMusic(), kind: "small", en: on }, { r: [1174, 676, 86, 30], label: "SOUND", fn: () => this.toggleSfx(), kind: "small", en: on },
-      { r: [1218, 6, 56, 22], label: "ADMIN", fn: () => this.openAdmin(), kind: "tiny", en: idle }, { r: [1156, 6, 56, 22], label: "HELP", fn: () => (this.helpOpen = !this.helpOpen), kind: "tiny", en: on },
+      { r: [568, 8, 34, 34], label: "", icon: "music", fn: () => this.toggleMusic(), kind: "icon", en: on }, { r: [606, 8, 34, 34], label: "", icon: "sound", fn: () => this.toggleSfx(), kind: "icon", en: on },
+      { r: [644, 8, 34, 34], label: "", icon: "help", fn: () => (this.helpOpen = !this.helpOpen), kind: "icon", en: on }, { r: [682, 8, 34, 34], label: "", icon: "gear", fn: () => this.openAdmin(), kind: "icon", en: idle },
+      { r: [14, 1076, 92, 56], label: "DENOM", fn: () => this.changeDenom(1), kind: "chip", en: idle },
+      { r: [114, 1080, 48, 48], label: "-", fn: () => this.changeLevel(-1), kind: "round", en: idle }, { r: [310, 1080, 48, 48], label: "+", fn: () => this.changeLevel(1), kind: "round", en: idle },
+      { r: [368, 1068, 196, 68], label: "SPIN", fn: () => this.onSpinButton(), kind: "spin", en: on, hold: true },
+      { r: [574, 1072, 72, 28], label: "MAX BET", fn: () => this.maxBet(), kind: "small", en: idle }, { r: [574, 1104, 72, 28], label: "AUTO", fn: () => this.toggleAuto(), kind: "small", en: on },
+      { r: [652, 1072, 58, 60], label: "TURBO", fn: () => { this.cfg.general.turbo_spin = !this.cfg.general.turbo_spin; this.toast("TURBO " + (this.cfg.general.turbo_spin ? "ON" : "OFF"), 1); }, kind: "small", en: on },
     ];
   }
   onSpinButton() { if (this.state === "idle") this.startSpin(); else if (this.state === "busy") this.skip = true; }
@@ -2517,11 +2584,20 @@ class Game {
   toLogical(e) { const r = this.canvas.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * H]; }
   bindInput() {
     const c = this.canvas;
-    c.addEventListener("pointerdown", (e) => { e.preventDefault(); this.audio.unlock(); if (e.button === 0 || e.pointerType !== "mouse") this.onClick(this.toLogical(e)); });
+    c.addEventListener("pointerdown", (e) => { e.preventDefault(); this.audio.unlock(); if (e.button === 0 || e.pointerType !== "mouse") this.onPress(this.toLogical(e)); });
+    c.addEventListener("pointerup", (e) => this.onRelease());
+    c.addEventListener("pointercancel", () => { this.spinPress = null; });
     c.addEventListener("pointermove", (e) => { this.mouse = this.toLogical(e); });
     c.addEventListener("contextmenu", (e) => e.preventDefault());
     window.addEventListener("keydown", (e) => { if (this.state === "admin" || e.ctrlKey || e.metaKey || e.altKey) return; this.audio.unlock(); if (this.onKey(e)) e.preventDefault(); });
   }
+  /* The SPIN button: tap = spin / stop, hold = toggle auto play. Everything else fires on press. */
+  onPress(p) {
+    const b = this.state === "admin" || this.state === "title" || this.helpOpen ? null : this.buttons.find((q) => q.hold && p[0] >= q.r[0] && p[0] <= q.r[0] + q.r[2] && p[1] >= q.r[1] && p[1] <= q.r[1] + q.r[3]);
+    if (b) { this.spinPress = { t: performance.now(), fired: false }; return; }
+    this.onClick(p);
+  }
+  onRelease() { const sp = this.spinPress; this.spinPress = null; if (sp && !sp.fired) this.onSpinButton(); }
   onClick(p) {
     if (this.state === "admin") return;
     if (this.state === "title") { this.state = "idle"; this.music("base"); this.sfx("click"); return; }
@@ -2547,241 +2623,6 @@ class Game {
     }
     return false;
   }
-  /* --------------------------------------------------------------------- draw */
-  drawOrb(ctx, orb, cx, cy, o = {}) {
-    const scale = o.scale || 1, kind = orb ? orb.kind : "cash";
-    if (o.slotAt) ctx.drawImage(this.art.empty, o.slotAt[0], o.slotAt[1], CELL, CELL);
-    addGlow(ctx, cx, cy, CELL * 0.62 * scale, scaleC(ORB_COLORS[kind][1], 0.28));
-    const sz = CELL * scale; ctx.drawImage(this.art.orb[kind], cx - sz / 2, cy - sz / 2, sz, sz);
-    if (orb) {
-      const cents = o.cents !== undefined ? o.cents : this.orbCents(orb);
-      if (kind === "cash") { const label = money(cents, true); drawText(ctx, label, (label.length <= 6 ? 30 : label.length <= 7 ? 26 : 22) * scale, cx, cy, { ow: 3, outline: [70, 25, 0] }); }
-      else { drawText(ctx, kind.toUpperCase(), 26 * scale, cx, cy - 8 * scale, { ow: 3, outline: [30, 0, 40] }); drawText(ctx, money(cents, true), 18 * scale, cx, cy + 16 * scale, { color: [255, 240, 180], ow: 2, outline: [30, 0, 40] }); }
-    }
-    if (o.flash > 0) addGlow(ctx, cx, cy, CELL * 0.8, [255, 255, 255], 0.9 * Math.min(1, o.flash));
-  }
-  draw() {
-    const ctx = this.ctx; ctx.setTransform(this.k, 0, 0, this.k, 0, 0);
-    ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
-    ctx.save();
-    if (this.shake > 0.2) ctx.translate((Math.random() * 2 - 1) * this.shake, (Math.random() * 2 - 1) * this.shake);
-    this.drawBackground(ctx);
-    if (this.state === "title") this.drawTitle(ctx);
-    else {
-      this.drawTitleBar(ctx); this.drawJackpots(ctx); this.drawSidePanels(ctx); this.drawReelFrame(ctx);
-      if (this.hold) this.drawHold(ctx);
-      else { this.reels.forEach((r) => r.draw(ctx, this)); this.drawSticky(ctx); this.drawHighlights(ctx); this.drawAnticipation(ctx); }
-      this.drawFliers(ctx); if (this.wheel) this.drawWheel(ctx);
-      this.smokey.draw(ctx); this.bolts.forEach((b) => b.draw(ctx)); this.particles.draw(ctx);
-      this.drawHud(ctx); this.banners.forEach((b) => b.draw(ctx, this.t)); this.drawToasts(ctx);
-      if (this.flash > 0) { ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = `rgba(255,255,220,${Math.min(1, this.flash)})`; ctx.fillRect(0, 0, W, H); ctx.restore(); }
-      if (this.broke() && this.state === "idle") this.drawBroke(ctx);
-      if (this.helpOpen) this.drawHelp(ctx);
-    }
-    ctx.restore();
-  }
-  drawBackground(ctx) {
-    const bg = this.bgs[this.theme], prev = this.bgs[this.prevTheme];
-    if (this.themeMix < 1) { ctx.drawImage(prev.canvas, 0, 0); ctx.globalAlpha = this.themeMix; ctx.drawImage(bg.canvas, 0, 0); ctx.globalAlpha = 1; } else ctx.drawImage(bg.canvas, 0, 0);
-    const intensity = this.state === "busy" && this.theme !== "base" ? 1.4 : 1, beam = this.art.beams[this.theme][0].canvas;
-    ctx.save(); ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < 5; i++) {
-      const x = 150 + i * 245 + Math.sin(this.t * 0.5 + i * 1.7) * 70, ang = Math.sin(this.t * 0.37 + i * 2.1) * 26;
-      ctx.save(); ctx.translate(x, 0); ctx.rotate(ang * Math.PI / 180); ctx.globalAlpha = Math.min(1, (0.6 + 0.3 * Math.sin(this.t * 1.3 + i)) * intensity); ctx.drawImage(beam, -150, 0, 300, 560 * 1.15); ctx.restore();
-      addGlow(ctx, x, 8, 60, scaleC(bg.acc, 0.8), 0.9);
-    }
-    ctx.restore();
-    this.embers.update(this.dt, 0.6 + intensity); this.embers.draw(ctx, bg.acc);
-    if (Math.random() < 0.08 * intensity) this.flashes.push([Math.random() < 0.5 ? rint(10, 230) : rint(1050, 1270), rint(300, 640), 0.18]);
-    for (const f of this.flashes) { f[2] -= this.dt; const a = Math.max(0, f[2] / 0.18); addGlow(ctx, f[0], f[1], 16, [255 * a, 255 * a, 230 * a], 1); }
-    this.flashes = this.flashes.filter((f) => f[2] > 0);
-  }
-  drawTitle(ctx) {
-    ctx.fillStyle = "#000"; ctx.fillRect(0, 250, W, 210);
-    ctx.drawImage(this.art.powerTOutline, W / 2 - 100, 40, 200, 200);
-    drawText(ctx, "VOLS POWER LINK", 110, W / 2, 330, { color: ORANGE, ow: 6, outline: [60, 20, 0], scale: 1 + 0.01 * Math.sin(this.t * 3) });
-    drawText(ctx, "TENNESSEE EDITION  -  SMOKEY'S ORB LINK  &  POWER T FREE GAMES", 26, W / 2, 410);
-    drawText(ctx, "CLICK OR PRESS ANY KEY TO PLAY", 34, W / 2, 560, { color: [255, 220, 160], alpha: (150 + 100 * Math.sin(this.t * 4)) / 255 });
-    if (this.audio.enabled) drawText(ctx, this.audio.started ? (this.audio.ready ? "SOUND READY" : "SYNTHESISING SOUNDS...") : "SOUND STARTS AFTER YOUR FIRST CLICK", 18, W / 2, 640, { color: [150, 150, 170], outline: null });
-  }
-  drawTitleBar(ctx) { drawText(ctx, "VOLS POWER LINK", 38, W / 2, 30, { color: ORANGE, ow: 3, outline: [50, 18, 0] }); for (const sx of [W / 2 - 230, W / 2 + 230]) ctx.drawImage(this.art.powerTOutline, sx - 25, 5, 50, 50); }
-  drawJackpots(ctx) {
-    const pw = 188, x0 = (W - 4 * pw - 3 * 14) / 2;
-    JACKPOTS.forEach((k, i) => {
-      const x = x0 + i * (pw + 14), [hi, mid] = ORB_COLORS[k];
-      fillRR(ctx, x, 62, pw, 60, 12, "rgb(10,6,20)", null); fillRR(ctx, x + 3, 65, pw - 6, 54, 10, rgb(scaleC(mid, 0.2)), null); fillRR(ctx, x + 1, 63, pw - 2, 58, 12, null, rgb(mid), 2);
-      drawText(ctx, k.toUpperCase(), 17, x + pw / 2, 76, { color: hi }); drawText(ctx, money(this.engine.orbCredits(new Orb(k, 0), this.betCredits, this.levelIdx) * this.denomCents), 26, x + pw / 2, 101);
-    });
-  }
-  drawReelFrame(ctx) {
-    const x = GX - 16, y = GY - 14, w = 5 * CELL + 4 * GAP + 32, h = 3 * PITCH - GAP + 28, col = { base: ORANGE, orb: [110, 190, 255], free: [255, 200, 60] }[this.theme];
-    addGlow(ctx, x + w / 2, y + h / 2, 560, scaleC(col, 0.2), 0.6);
-    fillRR(ctx, x, y, w, h, 18, "rgb(6,3,12)", null);
-    for (let i = 0; i < 5; i++) fillRR(ctx, GX + i * PITCH - 4, GY - 4, CELL + 8, 3 * PITCH - GAP + 8, 10, "rgb(20,12,34)", null);
-    fillRR(ctx, x, y, w, h, 18, null, rgb(col), 4); fillRR(ctx, x - 5, y - 5, w + 10, h + 10, 22, null, rgb(scaleC(col, 0.5)), 2);
-  }
-  drawAnticipation(ctx) {
-    for (const r of this.reels) if (r.anticipate) {
-      const a = 0.5 + 0.5 * Math.sin(this.t * 14);
-      fillRR(ctx, r.x - 5, GY - 5, CELL + 10, 3 * PITCH - GAP + 10, 8, null, rgb([255 * a, 190 * a, 60 * a]), 5);
-      addGlow(ctx, r.x + CELL / 2, GY + 1.5 * PITCH, 280, [60 * a, 40 * a, 8 * a], 0.8);
-    }
-  }
-  drawHighlights(ctx) {
-    if (!this.hlCells.size) return;
-    if (this.reels.every((r) => r.state === "idle") && (this.state === "idle" || this.winDisp > 0))
-      for (let c = 0; c < 5; c++) for (let r = 0; r < 3; r++) if (!this.hlCells.has(pk([c, r]))) { const [x, y] = cellPos(c, r); fillRR(ctx, x, y, CELL, CELL, 14, "rgba(0,0,0,0.59)", null); }
-    const pulse = 0.5 + 0.5 * Math.sin(this.t * 8);
-    for (const key of this.hlCells) {
-      const [c, r] = unpk(key), [x, y] = cellPos(c, r);
-      fillRR(ctx, x - 3, y - 3, CELL + 6, CELL + 6, 14, null, rgb(scaleC([255, 200, 80], 0.6 + 0.4 * pulse)), 4); addGlow(ctx, x + CELL / 2, y + CELL / 2, 110, [60, 36, 6], 0.8);
-    }
-    if (this.hlLine && this.state === "idle") {
-      const pts = PAYLINES[this.hlLine.line].map((row, c) => cellCenter(c, row));
-      for (const [col, w] of [[[255, 235, 150], 5], [[255, 150, 30], 2]]) { ctx.strokeStyle = rgb(col); ctx.lineWidth = w; ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.stroke(); }
-      const lw = this.hlLine; drawText(ctx, `LINE ${lw.line + 1}  -  ${lw.count} x ${lw.symbol}  -  ${money(Math.round(lw.credits) * this.spinDenom)}`, 22, W / 2, GY + 3 * PITCH + 10, { color: [255, 235, 170], ow: 3 });
-    }
-  }
-  drawSticky(ctx) {
-    for (const key of this.sticky) {
-      const [c, r] = unpk(key), [x, y] = cellPos(c, r), age = this.t - (this.stickyBorn[key] === undefined ? -9 : this.stickyBorn[key]);
-      const sc = age < 0.35 ? easeOutBack(Math.min(1, age / 0.35)) : 1, sz = CELL * Math.max(0.05, sc);
-      ctx.drawImage(this.art.sym.WILD, x + CELL / 2 - sz / 2, y + CELL / 2 - sz / 2, sz, sz);
-      const pulse = 0.5 + 0.5 * Math.sin(this.t * 5 + c); fillRR(ctx, x - 2, y - 2, CELL + 4, CELL + 4, 14, null, rgb([255, 180 + 70 * pulse, 60]), 3); addGlow(ctx, x + CELL / 2, y + CELL / 2, 100, [60 * pulse, 40 * pulse, 4], 0.8);
-    }
-  }
-  drawHold(ctx) {
-    for (let c = 0; c < 5; c++) for (let r = 0; r < 3; r++) {
-      const key = pk([c, r]), [x, y] = cellPos(c, r), d = this.hold[key];
-      ctx.drawImage(this.art.empty, x, y, CELL, CELL);
-      if (d) { const age = this.t - d.born, sc = age < 0.4 ? easeOutBack(Math.min(1, age / 0.4), 2) : 1; this.drawOrb(ctx, d.orb, x + CELL / 2, y + CELL / 2, { scale: Math.max(0.1, sc), flash: d.flash }); }
-      else if (this.holdSpinning.has(key)) {
-        ctx.save(); ctx.beginPath(); ctx.rect(x, y, CELL, CELL); ctx.clip(); ctx.strokeStyle = "rgb(60,90,140)"; ctx.lineWidth = 2;
-        for (let k = -1; k < 4; k++) { const yy = y + ((this.t * 700 + k * 60 + c * 23 + r * 41) % 240) - 60; ctx.beginPath(); ctx.moveTo(x + 10, yy); ctx.lineTo(x + CELL - 10, yy); ctx.stroke(); }
-        const ph = (this.t * 900 + c * 130 + r * 77) % 330 - 90; ctx.globalAlpha = 0.43; ctx.drawImage(this.art.blur.ORB, x, y + ph - 90, CELL, CELL); ctx.restore();
-      } else { ctx.strokeStyle = "rgb(36,28,60)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x + CELL / 2, y + CELL / 2, 18, 0, 6.283); ctx.stroke(); }
-    }
-  }
-  drawSidePanels(ctx) {
-    if (!this.smokey.active) { this.smokey.draw(ctx, true); drawText(ctx, "SMOKEY", 26, 118, 568, { color: [200, 220, 255], ow: 3 }); }
-    this.drawLeftCard(ctx);
-    const px = 1058, py = 150, cx = px + 103;
-    fillRR(ctx, px, py, 206, 420, 14, "rgb(10,6,20)", "rgb(90,56,20)", 2);
-    const T = (s, sz, y, col = WHITE, o = {}) => drawText(ctx, s, sz, cx, py + y, Object.assign({ color: col }, o));
-    if (this.hold) {
-      T("ORB LINK", 30, 28, [140, 210, 255], { ow: 3 }); T("RESPINS", 20, 76);
-      for (let i = 0; i < 3; i++) { const on = i < this.respinsDisp; ctx.fillStyle = on ? "rgb(255,190,60)" : "rgb(40,30,56)"; ctx.beginPath(); ctx.arc(cx - 50 + i * 50, py + 118, 17, 0, 6.283); ctx.fill(); ctx.strokeStyle = on ? "#fff" : "rgb(90,90,110)"; ctx.lineWidth = 2; ctx.stroke(); }
-      T("ORBS", 20, 176); T(`${Object.keys(this.hold).length} / 15`, 34, 212, [255, 210, 120], { ow: 3 }); T("TOTAL", 20, 272);
-      T(money(this.holdTotal() * this.spinDenom, true), 30, 308, GOLD, { ow: 3 }); T("FILL ALL 15 FOR", 15, 360, [200, 200, 220], { outline: null }); T("THE GRAND!", 22, 384, [255, 90, 90]);
-    } else if (this.fgInfo) {
-      const fi = this.fgInfo;
-      T("FREE GAMES", 28, 28, [255, 200, 80], { ow: 3 }); T("SPINS LEFT", 18, 76); T(String(fi.left), 60, 124, WHITE, { ow: 4 }); T("MULTIPLIER", 18, 188);
-      T(`x${fi.mult}`, 54, 232, [255, 160, 40], { ow: 4 }); T("ROUND WIN", 18, 292); T(money(Math.floor(this.winDisp) * this.spinDenom, true), 28, 328, GOLD, { ow: 3 });
-      T("SMOKEY DROPS", 14, 376, [200, 200, 220], { outline: null }); T("STICKY WILDS!", 20, 398, [255, 220, 120]);
-    } else {
-      ctx.drawImage(this.art.sym.POWERT, cx - 42, py + 18, 84, 84); T("3 POWER T", 26, 122, [255, 200, 80], { ow: 3 }); T("FREE GAMES", 22, 148);
-      ctx.drawImage(this.art.orb.cash, cx - 42, py + 188, 84, 84); T("6+ ORBS", 26, 292, [150, 210, 255], { ow: 3 }); T("ORB LINK", 22, 318);
-      T("WIN UP TO", 15, 364, [200, 200, 220], { outline: null }); T(money(this.engine.orbCredits(new Orb("grand", 0), this.betCredits, this.levelIdx) * this.denomCents, true), 26, 390, [255, 90, 90], { ow: 3 });
-    }
-  }
-  drawLeftCard(ctx) {
-    const x = 12, y = 150, w = 216, h = 112, cx = x + w / 2;
-    if (this.fgInfo && this.cfg.free_games.collect_orbs) {
-      const pulse = 0.5 + 0.5 * Math.sin(this.t * 4);
-      addGlow(ctx, cx, y + h / 2, 150, [70 + 30 * pulse, 50 + 20 * pulse, 6], 0.9);
-      fillRR(ctx, x, y, w, h, 14, "rgb(24,14,4)", rgb([255, 190 + 40 * pulse, 60]), 3);
-      drawText(ctx, "ORB POT", 24, cx, y + 20, { color: [255, 215, 90], ow: 3 });
-      drawText(ctx, money(this.potDisp * this.spinDenom, true), 36, cx, y + 56, { ow: 4 });
-      drawText(ctx, `${this.potCountDisp} ORB${this.potCountDisp === 1 ? "" : "S"} COLLECTED`, 14, cx, y + 88, { color: [255, 225, 160], outline: null });
-      drawText(ctx, "PAYS AT THE END", 11, cx, y + 102, { color: [200, 190, 170], outline: null });
-      return;
-    }
-    if (!this.cfg.collect.enabled) return;
-    const target = Math.max(1, this.cfg.collect.target), frac = Math.min(1, this.meterDisp / target), near = frac > 0.85, pulse = 0.5 + 0.5 * Math.sin(this.t * 6);
-    if (near) addGlow(ctx, cx, y + h / 2, 140, [60 * pulse, 34 * pulse, 4], 0.9);
-    fillRR(ctx, x, y, w, h, 14, "rgb(10,6,20)", near ? rgb([255, 190, 60]) : "rgb(110,66,20)", 2);
-    drawCheckerIcon(ctx, x + 12, y + 10, 22); drawText(ctx, "END ZONE METER", 15, x + 42, y + 21, { color: ORANGE, anchor: "left" });
-    const bx = x + 12, by = y + 44, bw = w - 24, bh = 24;
-    fillRR(ctx, bx, by, bw, bh, 8, "rgb(24,16,40)", "rgb(90,56,20)", 2);
-    if (frac > 0) { const g = ctx.createLinearGradient(bx, 0, bx + bw, 0); g.addColorStop(0, "rgb(255,150,0)"); g.addColorStop(1, near ? "rgb(255,240,150)" : "rgb(255,200,80)"); ctx.save(); rrect(ctx, bx + 2, by + 2, Math.max(8, (bw - 4) * frac), bh - 4, 6); ctx.fillStyle = g; ctx.fill(); ctx.restore(); }
-    drawText(ctx, `${Math.floor(this.meterDisp)} / ${target}`, 22, cx, by + bh / 2 + 1, { ow: 3 });
-    drawText(ctx, near ? "BONUS IS CLOSE!" : "COLLECT THE CHECKERBOARDS", 12, cx, y + 88, { color: near ? [255, 235, 140] : [190, 180, 210], outline: null });
-    drawText(ctx, this.cfg.collect.bonus === "orb_link" ? "FOR AN ORB LINK" : this.cfg.collect.bonus === "random" ? "FOR A BONUS" : "FOR FREE GAMES", 11, cx, y + 102, { color: [160, 150, 185], outline: null });
-  }
-  drawFliers(ctx) {
-    for (const f of this.fliers) {
-      const u = Math.min(1, f.t / f.dur), e = u * u * (3 - 2 * u), cx = (f.x0 + f.x1) / 2, cy = Math.min(f.y0, f.y1) - 90;
-      const x = (1 - e) * (1 - e) * f.x0 + 2 * (1 - e) * e * cx + e * e * f.x1, y = (1 - e) * (1 - e) * f.y0 + 2 * (1 - e) * e * cy + e * e * f.y1;
-      if (f.kind === "checker") { const s = 38 * (1 - 0.35 * e); addGlow(ctx, x, y, 34, [90, 50, 8], 0.9); drawCheckerIcon(ctx, x - s / 2, y - s / 2, s); }
-      else {
-        const s = 64 * (1 - 0.3 * e); addGlow(ctx, x, y, 50, scaleC(ORB_COLORS[f.orbKind][1], 0.4), 0.9); ctx.drawImage(this.art.orb[f.orbKind], x - s / 2, y - s / 2, s, s);
-        drawText(ctx, f.label, 14, x, y, { ow: 2, outline: [60, 20, 0], alpha: 1 - e * 0.5 });
-      }
-    }
-  }
-  drawWheel(ctx) {
-    const wh = this.wheel; ctx.fillStyle = `rgba(0,0,0,${0.8 * Math.min(1, wh.scale)})`; ctx.fillRect(0, 126, W, 500);
-    const cx = W / 2, cy = 378, R = 226 * Math.max(0.01, wh.scale);
-    addGlow(ctx, cx, cy, R * 1.6, [90, 60, 10], 0.9);
-    ctx.fillStyle = "rgb(60,34,0)"; ctx.beginPath(); ctx.arc(cx, cy, R + 24, 0, 6.283); ctx.fill();
-    const rim = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R); rim.addColorStop(0, "rgb(255,236,150)"); rim.addColorStop(0.5, "rgb(205,140,20)"); rim.addColorStop(1, "rgb(255,220,110)");
-    ctx.strokeStyle = rim; ctx.lineWidth = 16; ctx.beginPath(); ctx.arc(cx, cy, R + 12, 0, 6.283); ctx.stroke();
-    drawWheelDisc(ctx, cx, cy, R, wh.layout, wh.angle, { labels: true });
-    if (wh.hl >= 0) { const seg = Math.PI * 2 / wh.layout.length; ctx.save(); ctx.translate(cx, cy); ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = `rgba(255,255,255,${0.25 + 0.2 * Math.sin(this.t * 14)})`; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, R, -Math.PI / 2 - seg / 2, -Math.PI / 2 + seg / 2); ctx.closePath(); ctx.fill(); ctx.restore(); }
-    const nb = 28; for (let i = 0; i < nb; i++) { const a = i / nb * 6.283, on = (i + Math.floor(wh.bulbs * 8)) % 2 === 0; ctx.fillStyle = on ? "rgb(255,250,200)" : "rgb(150,100,20)"; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * (R + 12), cy + Math.sin(a) * (R + 12), 4.5, 0, 6.283); ctx.fill(); if (on) addGlow(ctx, cx + Math.cos(a) * (R + 12), cy + Math.sin(a) * (R + 12), 14, [120, 90, 20], 0.8); }
-    const hub = ctx.createRadialGradient(cx - 6, cy - 6, 2, cx, cy, 34); hub.addColorStop(0, "rgb(255,240,160)"); hub.addColorStop(1, "rgb(190,120,10)"); ctx.fillStyle = hub; ctx.beginPath(); ctx.arc(cx, cy, 34, 0, 6.283); ctx.fill(); ctx.strokeStyle = "rgb(90,50,0)"; ctx.lineWidth = 3; ctx.stroke();
-    ctx.drawImage(this.art.powerTOutline, cx - 24, cy - 24, 48, 48);
-    ctx.save(); ctx.translate(cx, cy - R - 16); ctx.rotate(-wh.flick * 0.35); ctx.fillStyle = "rgb(255,70,60)"; ctx.strokeStyle = "rgb(255,240,200)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-20, -22); ctx.lineTo(20, -22); ctx.lineTo(0, 30); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
-    if (wh.kind) { const i = JACKPOTS.indexOf(wh.kind), pw = 188, x0 = (W - 4 * pw - 3 * 14) / 2, x = x0 + i * (pw + 14); fillRR(ctx, x - 3, 59, pw + 6, 66, 14, null, rgb([255, 245, 200], 0.6 + 0.4 * Math.sin(this.t * 14)), 4); }
-  }
-  drawPanel(ctx, x, y, w, h, label, value, vs = 30, vc = WHITE) {
-    fillRR(ctx, x, y, w, h, 10, "rgb(10,6,20)", "rgb(110,66,20)", 2); drawText(ctx, label, 15, x + w / 2, y + 15, { color: ORANGE }); drawText(ctx, value, vs, x + w / 2, y + 46, { color: vc, ow: 3 });
-  }
-  drawHud(ctx) {
-    ctx.fillStyle = "rgb(8,5,16)"; ctx.fillRect(0, 628, W, 92); ctx.fillStyle = rgb(ORANGE); ctx.fillRect(0, 627, W, 3);
-    this.drawPanel(ctx, 18, 640, 202, 68, "BALANCE", money(this.balance), 32);
-    this.drawPanel(ctx, 224, 640, 178, 68, "DENOMINATION", this.denomLabel(), 32, [255, 210, 120]);
-    this.drawPanel(ctx, 410, 640, 172, 68, `POWER LEVEL ${this.levelIdx + 1}`, `${this.betCredits} CR`, 30, [255, 170, 60]);
-    this.drawPanel(ctx, 708, 640, 180, 68, "TOTAL BET", money(this.cost), 32);
-    const wc = Math.floor(this.winDisp) * this.spinDenom; this.drawPanel(ctx, 896, 640, 186, 68, "WIN", money(wc), 32, wc ? GOLD : [120, 120, 140]);
-    this.buttons.forEach((b) => this.drawButton(ctx, b));
-  }
-  drawButton(ctx, b) {
-    const [x, y, w, h] = b.r, en = b.en(), hov = this.mouse[0] >= x && this.mouse[0] <= x + w && this.mouse[1] >= y && this.mouse[1] <= y + h;
-    if (b.kind === "spin") {
-      const cx = x + w / 2, cy = y + h / 2, pulse = 0.5 + 0.5 * Math.sin(this.t * 4), idle = this.state === "idle" && !this.broke();
-      const col = idle ? [255, 120 + 50 * pulse, 0] : [110, 70, 30];
-      if (idle) addGlow(ctx, cx, cy - 6, 90, [70 + 50 * pulse, 30 + 20 * pulse, 0], 0.9);
-      ctx.fillStyle = "rgb(20,10,4)"; ctx.beginPath(); ctx.arc(cx, cy - 6, 56, 0, 6.283); ctx.fill();
-      const g = ctx.createRadialGradient(cx, cy - 22, 4, cx, cy - 6, 52); g.addColorStop(0, rgb(scaleC(col, 1.35))); g.addColorStop(1, rgb(col)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy - 6, 52, 0, 6.283); ctx.fill();
-      ctx.strokeStyle = "rgb(255,235,200)"; ctx.lineWidth = 3; ctx.stroke();
-      drawText(ctx, this.auto && this.state === "idle" ? "AUTO" : this.state === "idle" ? "SPIN" : this.state === "busy" ? "SKIP" : "...", 34, cx, cy - 6, { ow: 3, outline: [90, 30, 0] }); return;
-    }
-    if (b.kind === "tiny") { drawText(ctx, b.label, 13, x + w / 2, y + h / 2, { color: en ? [150, 140, 170] : [70, 70, 80], outline: null }); return; }
-    let col = en ? (hov ? [110, 70, 130] : [60, 40, 90]) : [30, 24, 40];
-    if (b.label === "AUTO" && this.auto) col = [200, 100, 0];
-    if (b.label === "MUSIC" && this.audio.mutedMusic) col = [90, 20, 20]; if (b.label === "SOUND" && this.audio.mutedSfx) col = [90, 20, 20];
-    fillRR(ctx, x, y, w, h, 8, rgb(col), en ? rgb(ORANGE) : "rgb(70,60,70)", 2); drawText(ctx, b.label, b.kind === "arrow" ? 20 : 15, x + w / 2, y + h / 2, { color: en ? WHITE : [110, 110, 120] });
-  }
-  drawToasts(ctx) { let y = 600; for (const [text, life] of this.toasts.slice(-3)) { drawText(ctx, text, 28, W / 2, y, { color: [255, 240, 200], ow: 3, alpha: Math.min(1, life / 0.4) }); y -= 34; } }
-  drawBroke(ctx) {
-    ctx.fillStyle = "rgba(0,0,0,0.75)"; ctx.fillRect(0, 0, W, H); drawText(ctx, "OUT OF FUNDS", 90, W / 2, 290, { color: [255, 90, 60], ow: 5 });
-    drawText(ctx, `CLICK OR PRESS R FOR A FRESH ${money(Math.round(this.cfg.general.starting_balance * 100))}`, 30, W / 2, 380);
-  }
-  drawHelp(ctx) {
-    ctx.fillStyle = "rgba(0,0,0,0.88)"; ctx.fillRect(0, 0, W, H); drawText(ctx, "HOW TO PLAY", 44, W / 2, 40, { color: ORANGE, ow: 4 });
-    ["20 paylines, 5 reels. Wilds substitute for everything except Power T and Orbs.", "6+ ORBS anywhere  =  SMOKEY'S ORB LINK. Orbs lock, 3 respins (reset on every new orb).",
-      "Smokey may appear at random to HOWL (boost orbs), FETCH (add orbs) or SUPER HOWL (boost all).", "Mini / Minor / Major jackpot orbs pay their jackpot. Fill all 15 spots for the GRAND.",
-      "3+ POWER T anywhere  =  POWER T FREE GAMES with climbing multipliers and sticky Smokey wilds.", "Every orb in Free Games drops into the ORB POT, which pays in full at the end. 3 WHEEL symbols spin the JACKPOT WHEEL.", "Collect checkerboards in the base game: fill the END ZONE METER to force the bonus.", "All prizes are multiples of your bet, so POWER LEVEL and DENOMINATION scale every win."]
-      .forEach((ln, i) => drawText(ctx, ln, 19, W / 2, 84 + i * 27, {}));
-    const lb = this.betCredits / LINES * this.denomCents; drawText(ctx, `PAYTABLE at ${money(this.cost)} bet (line bet ${money(Math.floor(lb))})`, 24, W / 2, 302, { color: [255, 200, 120] }); 
-    PAYING.slice().reverse().forEach((sym, i) => {
-      const col = i % 5, row = Math.floor(i / 5), x = 190 + col * 225, yy = 334 + row * 150; ctx.drawImage(this.art.sym[sym], x - 110, yy, 70, 70);
-      for (let k = 0; k < 3; k++) drawText(ctx, `${5 - k}: ${money(Math.round(this.cfg.paytable[sym][2 - k] * lb))}`, 17, x - 30, yy + 8 + k * 22, { anchor: "left" });
-    });
-    drawText(ctx, "SPACE spin/skip   UP/DOWN power level   LEFT/RIGHT denomination   A auto   B max bet   M music   S sound   F11 fullscreen   F1 admin", 15, W / 2, 665, { color: [180, 180, 200], outline: null });
-    drawText(ctx, "CLICK OR PRESS ESC TO CLOSE", 18, W / 2, 695, { color: [255, 220, 160] });
-  }
   /* ---------------------------------------------------------------------- loop */
   start() {
     let last = performance.now();
@@ -2794,6 +2635,308 @@ class Game {
     window.addEventListener("beforeunload", () => this.saveState());
   }
 }
+
+</script>
+<script>
+/* js/render.js */
+/* Portrait renderer for VOLS POWER LINK (720 x 1140): HUD, hero zone, board, controls, overlays. */
+"use strict";
+const MSG_Y = 1012, CTRL_Y = 1062, STATUS_Y = 368;
+const PLAQUE = { x: 372, w: 336, h: 46, gap: 5, y0: HERO_Y + 6 };
+const KIND_COL = { mini: [60, 200, 90], minor: [60, 130, 255], major: [175, 80, 245], grand: [240, 50, 60] };
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+function goldPlate(ctx, x, y, w, h, r, fillTop = [24, 20, 54], fillBot = [10, 8, 28]) {
+  fillRR(ctx, x, y, w, h, r, metalGradient(ctx, x, y, w, h), null);
+  const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, rgb(fillTop)); g.addColorStop(1, rgb(fillBot));
+  fillRR(ctx, x + 2.5, y + 2.5, w - 5, h - 5, Math.max(2, r - 2), g, null);
+}
+function icon(ctx, kind, cx, cy, s, col) {
+  ctx.save(); ctx.translate(cx, cy); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = s * 0.12; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  if (kind === "gear") { ctx.beginPath(); ctx.arc(0, 0, s * 0.3, 0, 6.283); ctx.stroke(); for (let i = 0; i < 8; i++) { const a = i / 8 * 6.283; ctx.beginPath(); ctx.moveTo(Math.cos(a) * s * 0.36, Math.sin(a) * s * 0.36); ctx.lineTo(Math.cos(a) * s * 0.5, Math.sin(a) * s * 0.5); ctx.stroke(); } }
+  else if (kind === "music") { ctx.beginPath(); ctx.ellipse(-s * 0.15, s * 0.28, s * 0.16, s * 0.12, -0.4, 0, 6.283); ctx.fill(); ctx.beginPath(); ctx.moveTo(-s * 0.01, s * 0.24); ctx.lineTo(-s * 0.01, -s * 0.38); ctx.lineTo(s * 0.32, -s * 0.28); ctx.stroke(); }
+  else if (kind === "sound") { ctx.beginPath(); ctx.moveTo(-s * 0.36, -s * 0.12); ctx.lineTo(-s * 0.18, -s * 0.12); ctx.lineTo(s * 0.04, -s * 0.34); ctx.lineTo(s * 0.04, s * 0.34); ctx.lineTo(-s * 0.18, s * 0.12); ctx.lineTo(-s * 0.36, s * 0.12); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.arc(s * 0.04, 0, s * 0.24, -0.9, 0.9); ctx.stroke(); ctx.beginPath(); ctx.arc(s * 0.04, 0, s * 0.42, -0.8, 0.8); ctx.stroke(); }
+  else if (kind === "help") { ctx.font = `${s * 0.95}px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("?", 0, s * 0.04); }
+  ctx.restore();
+}
+function rankIcon(ctx, i, cx, cy, s, art) {
+  const names = ["TROPHY", "HELMET", "FOOTBALL", "SMOKEY", "POWERT"]; ctx.drawImage(art.sym[names[i]], cx - s / 2, cy - s / 2, s, s);
+}
+
+Object.assign(Game.prototype, {
+  /* ------------------------------------------------------------------ orbs */
+  drawOrb(ctx, orb, cx, cy, o = {}) {
+    const scale = o.scale || 1, kind = orb ? orb.kind : "cash";
+    if (o.slotAt) ctx.drawImage(this.art.cellBg, o.slotAt[0], o.slotAt[1], CELL, CELL);
+    addGlow(ctx, cx, cy, CELL * 0.62 * scale, scaleC(ORB_COLORS[kind][1], 0.28));
+    const sz = CELL * 1.02 * scale; ctx.drawImage(this.art.orb[kind], cx - sz / 2, cy - sz / 2, sz, sz);
+    if (orb) {
+      const cents = o.cents !== undefined ? o.cents : this.orbCents(orb);
+      if (kind === "cash") { const label = money(cents, true); drawText(ctx, label, (label.length <= 6 ? 24 : label.length <= 7 ? 20 : 17) * scale, cx, cy, { ow: 3, outline: [70, 25, 0] }); }
+      else { drawText(ctx, kind.toUpperCase(), 19 * scale, cx, cy - 6 * scale, { ow: 3, outline: [30, 0, 40] }); drawText(ctx, money(cents, true), 14 * scale, cx, cy + 13 * scale, { color: [255, 240, 180], ow: 2, outline: [30, 0, 40] }); }
+    }
+    if (o.flash > 0) addGlow(ctx, cx, cy, CELL * 0.8, [255, 255, 255], 0.9 * Math.min(1, o.flash));
+  },
+  /* ------------------------------------------------------------------ frame */
+  draw() {
+    const ctx = this.ctx; ctx.setTransform(this.k, 0, 0, this.k, 0, 0);
+    ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
+    ctx.save();
+    if (this.shake > 0.2) ctx.translate((Math.random() * 2 - 1) * this.shake, (Math.random() * 2 - 1) * this.shake);
+    this.drawBackground(ctx);
+    if (this.state === "title") this.drawTitle(ctx);
+    else {
+      this.drawHero(ctx); this.drawLeaderboard(ctx); this.drawTopBar(ctx); this.drawStatusBar(ctx); this.drawBoard(ctx);
+      this.drawFliers(ctx); if (this.wheel) this.drawWheel(ctx);
+      this.bolts.forEach((b) => b.draw(ctx)); this.particles.draw(ctx);
+      this.drawBottom(ctx); this.banners.forEach((b) => b.draw(ctx, this.t)); this.drawToasts(ctx);
+      if (this.flash > 0) { ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = `rgba(255,255,255,${Math.min(0.9, this.flash)})`; ctx.fillRect(0, 0, W, H); ctx.restore(); }
+      if (this.broke() && this.state === "idle") this.drawBroke(ctx);
+      if (this.helpOpen) this.drawHelp(ctx);
+    }
+    ctx.restore();
+  },
+  drawBackground(ctx) {
+    const bg = this.bgs[this.theme], prev = this.bgs[this.prevTheme];
+    if (this.themeMix < 1) { ctx.drawImage(prev.canvas, 0, 0); ctx.globalAlpha = this.themeMix; ctx.drawImage(bg.canvas, 0, 0); ctx.globalAlpha = 1; } else ctx.drawImage(bg.canvas, 0, 0);
+    this.embers.update(this.dt, 0.6); this.embers.draw(ctx, bg.acc);
+  },
+  /* -------------------------------------------------------------- hero zone */
+  drawHero(ctx) {
+    ctx.save(); ctx.beginPath(); ctx.rect(0, HERO_Y, W, HERO_H); ctx.clip();
+    const st = this.art.stadium;
+    if (this.themeMix < 1) { ctx.drawImage(st[this.prevTheme], 0, HERO_Y); ctx.globalAlpha = this.themeMix; ctx.drawImage(st[this.theme], 0, HERO_Y); ctx.globalAlpha = 1; } else ctx.drawImage(st[this.theme], 0, HERO_Y);
+    // flicker on the floodlights
+    addGlow(ctx, 34, HERO_Y + 24, 60 + 6 * Math.sin(this.t * 3), [110, 100, 70], 0.8); addGlow(ctx, 686, HERO_Y + 24, 60 + 6 * Math.sin(this.t * 3.7), [110, 100, 70], 0.8);
+    this.smokey.draw(ctx, this.art);
+    ctx.restore();
+    this.drawPlaques(ctx);
+    const lx = PLAQUE.x + PLAQUE.w / 2; addGlow(ctx, lx, HERO_Y + HERO_H - 24, 120, [70, 34, 0], 0.9);
+    drawText(ctx, "VOLS POWER LINK", 30, lx, HERO_Y + HERO_H - 30, { color: ORANGE, ow: 4, outline: [40, 14, 0] });
+    drawText(ctx, "TENNESSEE EDITION", 12, lx, HERO_Y + HERO_H - 10, { color: [255, 225, 170], outline: null });
+    // hero frame edge
+    ctx.fillStyle = metalGradient(ctx, 0, HERO_Y - 2, W, 3); ctx.fillRect(0, HERO_Y - 2, W, 3);
+  },
+  drawPlaques(ctx) {
+    const names = ["grand", "major", "minor", "mini"], bet = this.betCredits;
+    names.forEach((k, i) => {
+      const x = PLAQUE.x, y = PLAQUE.y0 + i * (PLAQUE.h + PLAQUE.gap), w = PLAQUE.w, h = PLAQUE.h, c = KIND_COL[k];
+      const hot = this.wheel && this.wheel.kind === k, pulse = hot ? 0.5 + 0.5 * Math.sin(this.t * 14) : 0;
+      if (hot) addGlow(ctx, x + w / 2, y + h / 2, 150, scaleC(c, 0.5), 0.9);
+      goldPlate(ctx, x, y, w, h, 8, scaleC(c, 0.22 + 0.2 * pulse), scaleC(c, 0.08));
+      fillRR(ctx, x + 6, y + 6, 92, h - 12, 5, rgb(scaleC(c, 0.85)), null);
+      drawText(ctx, k.toUpperCase(), 19, x + 52, y + h / 2 + 1, { ow: 2, outline: [10, 10, 30] });
+      const amt = this.engine.orbCredits(new Orb(k, 0), bet, this.levelIdx) * this.denomCents;
+      drawText(ctx, money(amt), amt >= 1e7 ? 24 : 27, x + w - 12, y + h / 2 + 1, { anchor: "right", ow: 3, outline: [10, 6, 24], color: hot ? [255, 255, 160] : WHITE });
+    });
+  },
+  /* -------------------------------------------------------------- top bars */
+  drawTopBar(ctx) {
+    const g = ctx.createLinearGradient(0, 0, 0, 50); g.addColorStop(0, "rgb(30,22,70)"); g.addColorStop(1, "rgb(10,8,30)"); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 50);
+    ctx.fillStyle = metalGradient(ctx, 0, 48, W, 3); ctx.fillRect(0, 48, W, 3);
+    const cg = ctx.createRadialGradient(20, 16, 2, 22, 20, 14); cg.addColorStop(0, "rgb(255,240,150)"); cg.addColorStop(1, "rgb(210,140,10)");
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(22, 21, 13, 0, 6.283); ctx.fill(); ctx.strokeStyle = "rgb(120,70,0)"; ctx.lineWidth = 2; ctx.stroke();
+    drawText(ctx, "$", 16, 22, 22, { color: [140, 80, 0], outline: null });
+    drawText(ctx, money(this.balance), 27, 42, 20, { anchor: "left", ow: 3, color: [255, 245, 200] });
+    const lv = this.xpInfo(); fillRR(ctx, 42, 37, 190, 8, 4, "rgb(30,22,60)", "rgb(120,90,40)", 1);
+    if (lv.frac > 0.01) { const gg = ctx.createLinearGradient(42, 0, 232, 0); gg.addColorStop(0, "rgb(255,140,0)"); gg.addColorStop(1, "rgb(255,220,100)"); fillRR(ctx, 43, 38, Math.max(6, 188 * lv.frac), 6, 3, gg, null); }
+    drawText(ctx, `LV ${lv.level}`, 11, 238, 41, { anchor: "left", color: [255, 220, 150], ow: 2 });
+    drawText(ctx, "LAST WIN", 10, 400, 14, { color: [255, 200, 120], outline: null }); drawText(ctx, money(this.lastWinCents || 0, true), 20, 400, 32, { ow: 3, color: this.lastWinCents ? GOLD : [150, 150, 180] });
+    this.buttons.filter((b) => b.kind === "icon").forEach((b) => this.drawButton(ctx, b));
+  },
+  drawLeaderboard(ctx) {
+    const y = 54, h = 52;
+    ctx.fillStyle = "rgb(8,8,26)"; ctx.fillRect(0, 51, W, 59);
+    goldPlate(ctx, 6, y, 108, h, 8, [60, 30, 100], [24, 12, 50]);
+    drawText(ctx, "GAME DAY", 15, 60, y + 17, { color: [255, 220, 120], ow: 2 }); drawText(ctx, "TOP WINS", 17, 60, y + 36, { ow: 2 });
+    const cols = [[255, 205, 60], [200, 205, 220], [60, 200, 90], [205, 130, 60], [90, 140, 255]];
+    for (let i = 0; i < 5; i++) {
+      const x = 122 + i * 118, w = 112, c = cols[i], hot = this.bestFlash === i && this.t % 0.6 < 0.3;
+      goldPlate(ctx, x, y, w, h, 8, hot ? [60, 80, 160] : [22, 36, 96], [10, 16, 52]);
+      fillRR(ctx, x + 3, y + 3, w - 6, 3, 1.5, rgb(c), null);
+      drawText(ctx, "#" + (i + 1), 17, x + 12, y + 20, { anchor: "left", color: c, ow: 2 });
+      rankIcon(ctx, i, x + 24, y + 38, 26, this.art);
+      const v = this.best[i]; drawText(ctx, v ? money(v, true) : "---", 17, x + w - 8, y + 36, { anchor: "right", ow: 2, color: v ? WHITE : [120, 120, 150] });
+    }
+  },
+  /* ----------------------------------------------------------- status bar */
+  drawStatusBar(ctx) {
+    const x = 14, y = STATUS_Y, w = W - 28, h = 34, cx = W / 2;
+    goldPlate(ctx, x, y, w, h, 8, [20, 16, 46], [8, 6, 24]);
+    const T = (s, sz, px, col = WHITE, o = {}) => drawText(ctx, s, sz, px, y + h / 2 + 1, Object.assign({ color: col, ow: 2 }, o));
+    if (this.hold) {
+      T("RESPINS", 14, 70, [180, 200, 255]);
+      for (let i = 0; i < 3; i++) { const on = i < this.respinsDisp; ctx.fillStyle = on ? "rgb(255,190,60)" : "rgb(40,30,56)"; ctx.beginPath(); ctx.arc(124 + i * 26, y + h / 2, 9, 0, 6.283); ctx.fill(); ctx.strokeStyle = on ? "#fff" : "rgb(90,90,110)"; ctx.lineWidth = 2; ctx.stroke(); }
+      T(`ORBS ${Object.keys(this.hold).length} / ${ALL_CELLS.length}`, 18, cx + 10, [255, 215, 130]);
+      T("TOTAL " + money(this.holdTotal() * this.spinDenom, true), 18, W - 110, GOLD);
+    } else if (this.fgInfo) {
+      const fi = this.fgInfo, pot = this.cfg.free_games.collect_orbs, pulse = 0.5 + 0.5 * Math.sin(this.t * 4);
+      T(`FREE GAMES  ${fi.left} LEFT`, 16, 112, [255, 215, 110]);
+      if (pot) { T(`ORB POT ${money(this.potDisp * this.spinDenom, true)}`, 18, cx + 30, [255, 230, 120 + 100 * pulse], { ow: 3 }); drawText(ctx, `${this.potCountDisp} ORBS`, 11, cx + 30, y + h - 4, { color: [200, 190, 160], outline: null }); }
+      T(`x${fi.mult}`, 22, W - 56, [255, 160, 40], { ow: 3 });
+    } else if (this.cfg.collect.enabled) {
+      const target = Math.max(1, this.cfg.collect.target), frac = clamp01(this.meterDisp / target), near = frac > 0.85, pulse = 0.5 + 0.5 * Math.sin(this.t * 6);
+      if (near) addGlow(ctx, cx, y + h / 2, 300, [60 * pulse, 34 * pulse, 4], 0.8);
+      drawCheckerIcon(ctx, x + 10, y + 7, 20);
+      const bx = x + 40, bw = w - 190, by = y + 8, bh = h - 16;
+      fillRR(ctx, bx, by, bw, bh, 5, "rgb(20,14,40)", "rgb(120,80,30)", 1.5);
+      if (frac > 0) { const gg = ctx.createLinearGradient(bx, 0, bx + bw, 0); gg.addColorStop(0, "rgb(255,140,0)"); gg.addColorStop(1, near ? "rgb(255,245,150)" : "rgb(255,205,90)"); fillRR(ctx, bx + 1.5, by + 1.5, Math.max(6, (bw - 3) * frac), bh - 3, 4, gg, null); }
+      drawText(ctx, `END ZONE  ${Math.floor(this.meterDisp)} / ${target}`, 15, bx + bw / 2, by + bh / 2 + 1, { ow: 2 });
+      drawText(ctx, near ? "BONUS IS CLOSE!" : this.cfg.collect.bonus === "orb_link" ? "= ORB LINK" : this.cfg.collect.bonus === "random" ? "= BONUS" : "= FREE GAMES", 13, W - 82, y + h / 2 + 1, { color: near ? [255, 240, 140] : [210, 190, 230], ow: 2 });
+    }
+  },
+  /* ---------------------------------------------------------------- board */
+  drawBoard(ctx) {
+    const bw = 5 * CELL + 4 * GAP, bh = ROWS * CELL + (ROWS - 1) * GAP, fx = GX - 12, fy = GY - 12, fw = bw + 24, fh = bh + 24;
+    const col = { base: ORANGE, orb: [110, 190, 255], free: [255, 200, 60] }[this.theme];
+    addGlow(ctx, W / 2, fy + fh / 2, 460, scaleC(col, 0.16), 0.7);
+    fillRR(ctx, fx - 4, fy - 4, fw + 8, fh + 8, 18, metalGradient(ctx, fx, fy, fw, fh), null);
+    fillRR(ctx, fx + 3, fy + 3, fw - 6, fh - 6, 14, "rgb(6,6,20)", rgb(scaleC(col, 0.7)), 2);
+    for (const [px, py] of [[fx, fy], [fx + fw, fy], [fx, fy + fh], [fx + fw, fy + fh]]) { ctx.fillStyle = metalGradient(ctx, px - 7, py - 7, 14, 14); ctx.beginPath(); ctx.arc(px, py, 7, 0, 6.283); ctx.fill(); }
+    for (let c = 0; c < 5; c++) for (let r = 0; r < ROWS; r++) { const [x, y] = cellPos(c, r); ctx.drawImage(this.art.cellBg, x, y, CELL, CELL); }
+    if (this.hold) this.drawHold(ctx);
+    else { this.reels.forEach((r) => r.draw(ctx, this)); this.drawSticky(ctx); this.drawHighlights(ctx); this.drawAnticipation(ctx); }
+  },
+  drawAnticipation(ctx) {
+    for (const r of this.reels) if (r.anticipate) {
+      const a = 0.5 + 0.5 * Math.sin(this.t * 14), hgt = ROWS * PITCH - GAP;
+      fillRR(ctx, r.x - 3, GY - 3, CELL + 6, hgt + 6, 8, null, rgb([255 * a, 190 * a, 60 * a]), 4); addGlow(ctx, r.x + CELL / 2, GY + hgt / 2, 220, [60 * a, 40 * a, 8 * a], 0.8);
+    }
+  },
+  drawHighlights(ctx) {
+    if (!this.hlCells.size) return;
+    if (this.reels.every((r) => r.state === "idle") && (this.state === "idle" || this.winDisp > 0))
+      for (let c = 0; c < 5; c++) for (let r = 0; r < ROWS; r++) if (!this.hlCells.has(pk([c, r]))) { const [x, y] = cellPos(c, r); fillRR(ctx, x, y, CELL, CELL, 6, "rgba(0,0,10,0.58)", null); }
+    const pulse = 0.5 + 0.5 * Math.sin(this.t * 9);
+    for (const key of this.hlCells) {
+      const [c, r] = unpk(key), [x, y] = cellPos(c, r);
+      fillRR(ctx, x - 2, y - 2, CELL + 4, CELL + 4, 6, `rgba(120,230,255,${0.1 + 0.08 * pulse})`, rgb(scaleC([120, 230, 255], 0.75 + 0.25 * pulse)), 3);
+    }
+    if (this.hlLine && this.state === "idle") {
+      const pts = PAYLINES[this.hlLine.line].map((row, c) => cellCenter(c, row));
+      for (const [cc, w] of [[[160, 240, 255], 4], [[255, 255, 255], 1.5]]) { ctx.strokeStyle = rgb(cc, 0.9); ctx.lineWidth = w; ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.stroke(); }
+    }
+  },
+  drawSticky(ctx) {
+    for (const key of this.sticky) {
+      const [c, r] = unpk(key), [x, y] = cellPos(c, r), age = this.t - (this.stickyBorn[key] === undefined ? -9 : this.stickyBorn[key]);
+      const sc = age < 0.35 ? easeOutBack(Math.min(1, age / 0.35)) : 1, sz = CELL * Math.max(0.05, sc);
+      ctx.drawImage(this.art.cellBg, x, y, CELL, CELL); ctx.drawImage(this.art.sym.WILD, x + CELL / 2 - sz / 2, y + CELL / 2 - sz / 2, sz, sz);
+      const pulse = 0.5 + 0.5 * Math.sin(this.t * 5 + c); fillRR(ctx, x - 1, y - 1, CELL + 2, CELL + 2, 6, null, rgb([255, 180 + 70 * pulse, 60]), 3); addGlow(ctx, x + CELL / 2, y + CELL / 2, 80, [60 * pulse, 40 * pulse, 4], 0.8);
+    }
+  },
+  drawHold(ctx) {
+    for (let c = 0; c < 5; c++) for (let r = 0; r < ROWS; r++) {
+      const key = pk([c, r]), [x, y] = cellPos(c, r), d = this.hold[key];
+      if (d) { const age = this.t - d.born, sc = age < 0.4 ? easeOutBack(Math.min(1, age / 0.4), 2) : 1; this.drawOrb(ctx, d.orb, x + CELL / 2, y + CELL / 2, { scale: Math.max(0.1, sc), flash: d.flash }); }
+      else if (this.holdSpinning.has(key)) {
+        ctx.save(); ctx.beginPath(); ctx.rect(x, y, CELL, CELL); ctx.clip(); ctx.strokeStyle = "rgb(60,90,140)"; ctx.lineWidth = 2;
+        for (let k = -1; k < 4; k++) { const yy = y + ((this.t * 700 + k * 45 + c * 23 + r * 41) % 190) - 45; ctx.beginPath(); ctx.moveTo(x + 8, yy); ctx.lineTo(x + CELL - 8, yy); ctx.stroke(); }
+        const ph = (this.t * 800 + c * 130 + r * 77) % 260 - 70; ctx.globalAlpha = 0.43; ctx.drawImage(this.art.blur.ORB, x, y + ph - 70, CELL, CELL); ctx.restore();
+      } else { ctx.strokeStyle = "rgb(40,40,80)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x + CELL / 2, y + CELL / 2, 13, 0, 6.283); ctx.stroke(); }
+    }
+  },
+  /* ---------------------------------------------------------- bottom: win bar + controls */
+  drawBottom(ctx) {
+    const x = 10, y = MSG_Y, w = W - 20, h = 44;
+    goldPlate(ctx, x, y, w, h, 10, [20, 30, 100], [8, 10, 46]);
+    const wc = Math.floor(this.winDisp) * this.spinDenom;
+    if (wc > 0) {
+      drawText(ctx, money(wc), 34, W / 2, y + 19, { color: [255, 226, 80], ow: 4, outline: [60, 30, 0], scale: 1 + 0.03 * Math.sin(this.t * 10) * (this.state === "busy" ? 1 : 0) });
+      if (this.hlLine && this.state === "idle") drawText(ctx, `LINE ${this.hlLine.line + 1} PAYS ${money(Math.round(this.hlLine.credits) * this.spinDenom)}`, 12, W / 2, y + h - 7, { color: [190, 215, 255], outline: null });
+      else if (this.winLabel) drawText(ctx, this.winLabel, 12, W / 2, y + h - 7, { color: [190, 215, 255], outline: null });
+    } else drawText(ctx, this.state === "busy" ? "GOOD LUCK!" : this.auto ? "AUTO PLAY" : "PLACE YOUR BET", 20, W / 2, y + h / 2 + 1, { color: [200, 220, 255], ow: 2 });
+    const bar = ctx.createLinearGradient(0, CTRL_Y - 4, 0, H); bar.addColorStop(0, "rgb(26,18,66)"); bar.addColorStop(1, "rgb(8,6,24)"); ctx.fillStyle = bar; ctx.fillRect(0, CTRL_Y - 4, W, H - CTRL_Y + 4);
+    ctx.fillStyle = metalGradient(ctx, 0, CTRL_Y - 6, W, 3); ctx.fillRect(0, CTRL_Y - 6, W, 3);
+    // bet display
+    drawText(ctx, money(this.cost), 28, 236, CTRL_Y + 36, { ow: 3, color: WHITE });
+    drawText(ctx, `BET  -  LEVEL ${this.levelIdx + 1}  -  ${this.betCredits} CR`, 11, 236, CTRL_Y + 62, { color: [190, 190, 230], outline: null });
+    this.buttons.filter((b) => b.kind !== "icon").forEach((b) => this.drawButton(ctx, b));
+  },
+  drawButton(ctx, b) {
+    const [x, y, w, h] = b.r, en = b.en(), hov = this.mouse[0] >= x && this.mouse[0] <= x + w && this.mouse[1] >= y && this.mouse[1] <= y + h;
+    if (b.kind === "icon") {
+      const muted = (b.icon === "music" && this.audio.mutedMusic) || (b.icon === "sound" && this.audio.mutedSfx);
+      fillRR(ctx, x, y, w, h, 8, hov ? "rgb(60,50,110)" : "rgb(26,22,60)", "rgba(214,160,60,0.6)", 1.5); icon(ctx, b.icon, x + w / 2, y + h / 2, 20, muted ? "rgb(255,90,90)" : en ? "rgb(255,225,150)" : "rgb(90,90,110)");
+      if (muted) { ctx.strokeStyle = "rgb(255,90,90)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 8, y + h - 8); ctx.lineTo(x + w - 8, y + 8); ctx.stroke(); } return;
+    }
+    if (b.kind === "spin") {
+      const busy = this.state === "busy", spinning = busy && this.reels.some((r) => r.state !== "idle"), label = busy ? (spinning ? "STOP" : "SKIP") : this.state === "idle" ? "SPIN!" : "...";
+      const c1 = busy ? [255, 80, 70] : [90, 235, 90], c2 = busy ? [170, 20, 20] : [20, 140, 30], pulse = 0.5 + 0.5 * Math.sin(this.t * 5), live = this.state === "idle" && !this.broke();
+      if (live || busy) addGlow(ctx, x + w / 2, y + h / 2, 150, scaleC(c1, 0.22 + 0.12 * pulse), 0.9);
+      const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, rgb(c1)); g.addColorStop(0.5, rgb(c2)); g.addColorStop(1, rgb(scaleC(c2, 0.7)));
+      fillRR(ctx, x, y, w, h, 14, "rgb(20,10,10)", null); fillRR(ctx, x + 3, y + 3, w - 6, h - 6, 12, g, "rgb(255,235,200)", 2.5);
+      ctx.fillStyle = "rgba(255,255,255,0.22)"; rrect(ctx, x + 8, y + 6, w - 16, h * 0.33, 8); ctx.fill();
+      drawText(ctx, label, 32, x + w / 2, y + h / 2 - (this.auto || live ? 5 : 0), { ow: 4, outline: [60, 0, 0] });
+      if (this.spinPress && this.spinPress.t) { const f = clamp01((performance.now() - this.spinPress.t) / 600); fillRR(ctx, x + 10, y + h - 9, (w - 20) * f, 4, 2, "rgb(255,255,255)", null); }
+      if (this.auto) drawText(ctx, "AUTO ON - TAP TO STOP", 10, x + w / 2, y + h - 13, { outline: null, color: [255, 255, 200] }); else if (live) drawText(ctx, "Hold for Auto", 11, x + w / 2, y + h - 13, { outline: null, color: [235, 255, 235] });
+      return;
+    }
+    if (b.kind === "round") {
+      fillRR(ctx, x, y, w, h, w / 2, en ? (hov ? "rgb(70,90,200)" : "rgb(40,56,150)") : "rgb(30,30,60)", en ? "rgb(214,170,80)" : "rgb(70,70,90)", 2.5);
+      drawText(ctx, b.label, 30, x + w / 2, y + h / 2 + 1, { color: en ? WHITE : [110, 110, 130], ow: 2 }); return;
+    }
+    let col = en ? (hov ? [90, 70, 160] : [52, 40, 110]) : [30, 26, 54];
+    if (b.label === "AUTO" && this.auto) col = [200, 100, 0];
+    fillRR(ctx, x, y, w, h, 8, rgb(col), en ? "rgb(214,160,60)" : "rgb(70,60,80)", 2);
+    if (b.kind === "chip") { drawText(ctx, b.label, 11, x + w / 2, y + 12, { color: [255, 210, 130], ow: 2 }); drawText(ctx, this.denomLabel(), 26, x + w / 2, y + h - 18, { ow: 3 }); }
+    else drawText(ctx, b.label, 14, x + w / 2, y + h / 2 + 1, { color: en ? WHITE : [110, 110, 120], ow: 2 });
+  },
+  drawToasts(ctx) { let y = MSG_Y - 24; for (const [text, life] of this.toasts.slice(-3)) { drawText(ctx, text, 20, W / 2, y, { color: [255, 240, 200], ow: 3, alpha: Math.min(1, life / 0.4) }); y -= 26; } },
+  /* ---------------------------------------------------------------- overlays */
+  drawFliers(ctx) {
+    for (const f of this.fliers) {
+      const u = Math.min(1, f.t / f.dur), e = u * u * (3 - 2 * u), cx = (f.x0 + f.x1) / 2, cy = Math.min(f.y0, f.y1) - 70;
+      const x = (1 - e) * (1 - e) * f.x0 + 2 * (1 - e) * e * cx + e * e * f.x1, y = (1 - e) * (1 - e) * f.y0 + 2 * (1 - e) * e * cy + e * e * f.y1;
+      if (f.kind === "checker") { const s = 30 * (1 - 0.35 * e); addGlow(ctx, x, y, 28, [90, 50, 8], 0.9); drawCheckerIcon(ctx, x - s / 2, y - s / 2, s); }
+      else { const s = 50 * (1 - 0.3 * e); addGlow(ctx, x, y, 40, scaleC(ORB_COLORS[f.orbKind][1], 0.4), 0.9); ctx.drawImage(this.art.orb[f.orbKind], x - s / 2, y - s / 2, s, s); drawText(ctx, f.label, 11, x, y, { ow: 2, outline: [60, 20, 0], alpha: 1 - e * 0.5 }); }
+    }
+  },
+  drawWheel(ctx) {
+    const wh = this.wheel, a = Math.min(1, wh.scale); ctx.fillStyle = `rgba(0,0,10,${0.82 * a})`; ctx.fillRect(0, HERO_Y, W, MSG_Y - HERO_Y); this.drawPlaques(ctx);
+    const cx = W / 2, cy = 706, R = 262 * Math.max(0.01, wh.scale);
+    addGlow(ctx, cx, cy, R * 1.5, [90, 60, 10], 0.9);
+    ctx.fillStyle = "rgb(60,34,0)"; ctx.beginPath(); ctx.arc(cx, cy, R + 22, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = metalGradient(ctx, cx - R, cy - R, R * 2, R * 2); ctx.lineWidth = 15; ctx.beginPath(); ctx.arc(cx, cy, R + 11, 0, 6.283); ctx.stroke();
+    drawWheelDisc(ctx, cx, cy, R, wh.layout, wh.angle, { labels: true });
+    if (wh.hl >= 0) { const seg = Math.PI * 2 / wh.layout.length; ctx.save(); ctx.translate(cx, cy); ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = `rgba(255,255,255,${0.25 + 0.2 * Math.sin(this.t * 14)})`; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, R, -Math.PI / 2 - seg / 2, -Math.PI / 2 + seg / 2); ctx.closePath(); ctx.fill(); ctx.restore(); }
+    const nb = 26; for (let i = 0; i < nb; i++) { const an = i / nb * 6.283, on = (i + Math.floor(wh.bulbs * 8)) % 2 === 0, bx = cx + Math.cos(an) * (R + 11), by = cy + Math.sin(an) * (R + 11); ctx.fillStyle = on ? "rgb(255,250,200)" : "rgb(150,100,20)"; ctx.beginPath(); ctx.arc(bx, by, 4, 0, 6.283); ctx.fill(); if (on) addGlow(ctx, bx, by, 12, [120, 90, 20], 0.8); }
+    const hub = ctx.createRadialGradient(cx - 5, cy - 5, 2, cx, cy, 30); hub.addColorStop(0, "rgb(255,240,160)"); hub.addColorStop(1, "rgb(190,120,10)"); ctx.fillStyle = hub; ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 6.283); ctx.fill(); ctx.strokeStyle = "rgb(90,50,0)"; ctx.lineWidth = 3; ctx.stroke();
+    ctx.drawImage(this.art.powerTOutline, cx - 21, cy - 21, 42, 42);
+    ctx.save(); ctx.translate(cx, cy - R - 14); ctx.rotate(-wh.flick * 0.35); ctx.fillStyle = "rgb(255,70,60)"; ctx.strokeStyle = "rgb(255,240,200)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-18, -20); ctx.lineTo(18, -20); ctx.lineTo(0, 28); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+  },
+  drawTitle(ctx) {
+    ctx.fillStyle = "rgba(0,0,10,0.72)"; ctx.fillRect(0, 280, W, 420);
+    ctx.drawImage(this.art.powerTOutline, W / 2 - 110, 120, 220, 220);
+    drawText(ctx, "VOLS", 120, W / 2, 400, { color: ORANGE, ow: 7, outline: [60, 20, 0], scale: 1 + 0.01 * Math.sin(this.t * 3) });
+    drawText(ctx, "POWER LINK", 86, W / 2, 500, { color: WHITE, ow: 6, outline: [60, 20, 0] });
+    drawText(ctx, "SMOKEY'S ORB LINK  -  POWER T FREE GAMES", 19, W / 2, 580, { color: [255, 210, 150] });
+    drawText(ctx, "TENNESSEE EDITION", 24, W / 2, 620, { color: ORANGE_HI, ow: 3 });
+    drawText(ctx, "TAP TO PLAY", 44, W / 2, 800, { color: [255, 230, 170], alpha: (150 + 100 * Math.sin(this.t * 4)) / 255 });
+    if (this.audio.enabled) drawText(ctx, this.audio.started ? (this.audio.ready ? "SOUND READY" : "SYNTHESISING SOUNDS...") : "SOUND STARTS AFTER YOUR FIRST TAP", 15, W / 2, 870, { color: [150, 150, 175], outline: null });
+  },
+  drawBroke(ctx) {
+    ctx.fillStyle = "rgba(0,0,10,0.78)"; ctx.fillRect(0, 0, W, H); drawText(ctx, "OUT OF FUNDS", 66, W / 2, 520, { color: [255, 90, 60], ow: 5 });
+    drawText(ctx, `TAP OR PRESS R FOR A FRESH ${money(Math.round(this.cfg.general.starting_balance * 100))}`, 20, W / 2, 590);
+  },
+  drawHelp(ctx) {
+    ctx.fillStyle = "rgba(0,0,10,0.93)"; ctx.fillRect(0, 0, W, H); drawText(ctx, "HOW TO PLAY", 42, W / 2, 50, { color: ORANGE, ow: 4 });
+    const lines = ["5 reels x 5 rows, 40 paylines, stacks of symbols. Wins pay left to right, 3 or more.", "Wilds substitute for everything except Power T, Wheel and Orbs.",
+      "6+ ORBS = SMOKEY'S ORB LINK. Orbs lock, 3 respins (reset on every new orb).", "Smokey may HOWL (boost orbs), FETCH (add orbs) or SUPER HOWL (boost all).",
+      "Mini / Minor / Major orbs pay their jackpot. Fill every spot for the GRAND.", "3+ POWER T = FREE GAMES: climbing multipliers, sticky Smokey wilds.",
+      "In Free Games every orb drops into the ORB POT, paid in full at the end.", "3 WHEEL symbols on a free spin = the JACKPOT WHEEL (jackpots only).",
+      "Collect checkerboards: fill the END ZONE meter to force the bonus.", "Every prize is a multiple of your bet, so LEVEL and DENOMINATION scale all wins."];
+    lines.forEach((ln, i) => drawText(ctx, ln, 15, W / 2, 100 + i * 26));
+    const lb = this.betCredits / LINES * this.denomCents; drawText(ctx, `PAYTABLE at ${money(this.cost)} bet`, 20, W / 2, 392, { color: [255, 200, 120] });
+    PAYING.slice().reverse().forEach((sym, i) => {
+      const col = i % 3, row = Math.floor(i / 3), x = 30 + col * 232, yy = 420 + row * 106; ctx.drawImage(this.art.sym[sym], x, yy, 80, 80);
+      for (let k = 0; k < 3; k++) drawText(ctx, `${5 - k}: ${money(Math.round(this.cfg.paytable[sym][2 - k] * lb))}`, 15, x + 88, yy + 16 + k * 22, { anchor: "left" });
+    });
+    drawText(ctx, "SPACE spin/stop (hold = auto)   UP/DOWN level   LEFT/RIGHT denom   A auto   B max bet", 12, W / 2, 1090, { color: [180, 180, 200], outline: null });
+    drawText(ctx, "M music   S sound   F11 fullscreen   F1 admin   ESC close", 12, W / 2, 1108, { color: [180, 180, 200], outline: null });
+    drawText(ctx, "TAP ANYWHERE TO CLOSE", 16, W / 2, 1128, { color: [255, 220, 160] });
+  },
+});
 
 </script>
 <script>
